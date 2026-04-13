@@ -1,0 +1,61 @@
+# ============================================================
+# docker-compose.yml - ArrasPro
+# ============================================================
+# Levanta dos servicios:
+#   1. db       → PostgreSQL 15
+#   2. api      → FastAPI (ArrasPro)
+# ============================================================
+
+services:
+
+  # ─────────────────────────────────────────
+  # SERVICIO: Base de datos PostgreSQL
+  # ─────────────────────────────────────────
+  db:
+    image: postgres:15-alpine
+    container_name: arraspro_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
+      POSTGRES_DB: ${DB_NAME}
+    # Puerto NO expuesto al host para evitar conflicto con PostgreSQL local.
+    # La API accede a la BD directamente por la red interna de Docker.
+    # Descomenta la línea siguiente si necesitas acceder desde un cliente externo (ej: DBeaver):
+    # ports:
+    #   - "5434:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ─────────────────────────────────────────
+  # SERVICIO: API FastAPI
+  # ─────────────────────────────────────────
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: arraspro_api
+    restart: unless-stopped
+    env_file:
+      - .env.docker    # Usa variables con DB_HOST=db (nombre del servicio)
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy   # Espera a que la BD esté lista
+    volumes:
+      # Monta carpetas que no son código para facilitar actualizaciones sin rebuild
+      - ./plantillas:/app/plantillas
+      - ./static:/app/static
+
+# ─────────────────────────────────────────
+# VOLÚMENES
+# ─────────────────────────────────────────
+volumes:
+  postgres_data:
+    driver: local

@@ -5,18 +5,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ArrasPro - Generador de Contratos Inmobiliarios</title>
-    <meta name="description" content="Genera contratos de arras y alquiler de forma profesional con IA. ArrasPro automatiza la extracción de datos y la generación de PDFs legales.">
+    <meta name="description"
+        content="Genera contratos de arras y alquiler de forma profesional con IA. ArrasPro automatiza la extracción de datos y la generación de PDFs legales.">
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
 
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="/static/imagenes/logo.svg">
+    <link rel="icon" type="image/png" href="/static/imagenes/logo.png">
 
     <!-- Scripts de lógica (Deben cargar antes que Alpine) -->
     <script src="js/app.js?v=6.0"></script>
@@ -28,25 +30,28 @@
     <script src="https://accounts.google.com/gsi/client" async defer></script>
 
     <!-- Estilos -->
-    <link rel="stylesheet" href="css/variables.css">
-    <link rel="stylesheet" href="css/base.css">
-    <link rel="stylesheet" href="css/header.css">
-    <link rel="stylesheet" href="css/landing.css">
-    <link rel="stylesheet" href="css/selector.css">
-    <link rel="stylesheet" href="css/editor.css">
-    <link rel="stylesheet" href="css/dashboard.css">
-    <link rel="stylesheet" href="css/modal.css">
-    <link rel="stylesheet" href="css/footer.css">
-    <link rel="stylesheet" href="css/animations.css">
-    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/variables.css?v=1.1">
+    <link rel="stylesheet" href="css/base.css?v=1.1">
+    <link rel="stylesheet" href="css/header.css?v=1.1">
+    <link rel="stylesheet" href="css/landing.css?v=1.1">
+    <link rel="stylesheet" href="css/selector.css?v=1.1">
+    <link rel="stylesheet" href="css/editor.css?v=1.1">
+    <link rel="stylesheet" href="css/dashboard.css?v=1.1">
+    <link rel="stylesheet" href="css/modal.css?v=1.1">
+    <link rel="stylesheet" href="css/footer.css?v=1.1">
+    <link rel="stylesheet" href="css/animations.css?v=1.1">
+    <link rel="stylesheet" href="css/responsive.css?v=1.1">
 
     <!-- Prevenir FOUC (parpadeo sin estilos) -->
     <style>
-        [x-cloak] { display: none !important; }
+        [x-cloak] {
+            display: none !important;
+        }
     </style>
 </head>
 
 <!-- Alpine.js: Estado global de la aplicación -->
+
 <body x-data="appState()" x-cloak x-init="init()">
 
     <!-- ============================================ -->
@@ -56,7 +61,7 @@
         <div class="header-content">
             <!-- Logo -->
             <div class="logo" @click="navigateTo('landing')" style="cursor:pointer;">
-                <img src="/static/imagenes/logo.svg" alt="ArrasPro" class="logo-img">
+                <img src="/static/imagenes/logo.png" alt="ArrasPro" class="logo-img">
                 <span class="logo-text">ArrasPro</span>
             </div>
 
@@ -76,14 +81,16 @@
                         <!-- Notificaciones -->
                         <button class="icon-btn" @click="toggleNotifications()" id="btn-notifications">
                             <i data-lucide="bell"></i>
-                            <span class="notification-badge" x-show="notifications.length > 0" x-text="notifications.length"></span>
+                            <span class="notification-badge" x-show="notifications.length > 0"
+                                x-text="notifications.length"></span>
                         </button>
                         <!-- Avatar del usuario -->
                         <div class="user-avatar" @click="toggleUserMenu()">
                             <span x-text="user.nombre.charAt(0).toUpperCase()"></span>
                         </div>
                         <!-- Menú desplegable del usuario -->
-                        <div class="user-dropdown" x-show="showUserMenu" @click.outside="showUserMenu = false" x-transition>
+                        <div class="user-dropdown" x-show="showUserMenu" @click.outside="showUserMenu = false"
+                            x-transition>
                             <div class="dropdown-header">
                                 <p class="dropdown-name" x-text="user.nombre"></p>
                                 <p class="dropdown-email" x-text="user.email"></p>
@@ -112,7 +119,8 @@
     <main class="app-main">
 
         <!-- ========== LANDING PAGE ========== -->
-        <section id="landing-view" class="view" x-show="currentView === 'landing'" x-transition:enter="fade-in" x-transition:leave="fade-out">
+        <section id="landing-view" class="view" x-show="currentView === 'landing'" x-transition:enter="fade-in"
+            x-transition:leave="fade-out">
             <div class="hero-section">
                 <div class="hero-badge">
                     <i data-lucide="sparkles"></i>
@@ -187,7 +195,8 @@
         </section>
 
         <!-- ========== SELECTOR DE TIPO DE CONTRATO ========== -->
-        <section id="selector-view" class="view" x-show="currentView === 'selector'" x-transition:enter="fade-in" x-transition:leave="fade-out">
+        <section id="selector-view" class="view" x-show="currentView === 'selector'" x-transition:enter="fade-in"
+            x-transition:leave="fade-out">
             <div class="selector-container">
                 <div class="selector-header">
                     <button class="btn-back" @click="navigateTo('landing')">
@@ -200,7 +209,7 @@
                 <div class="contract-types-grid">
                     <!-- Compraventa sin cargas -->
                     <div class="contract-type-card" @click="selectContractType('arras_sin_cargas')"
-                         :class="{ 'selected': contrato.tipo === 'arras_sin_cargas' }">
+                        :class="{ 'selected': contrato.tipo === 'arras_sin_cargas' }">
                         <div class="card-icon card-icon-blue">
                             <i data-lucide="home"></i>
                         </div>
@@ -211,7 +220,7 @@
 
                     <!-- Compraventa con cargas -->
                     <div class="contract-type-card" @click="selectContractType('arras_con_cargas')"
-                         :class="{ 'selected': contrato.tipo === 'arras_con_cargas' }">
+                        :class="{ 'selected': contrato.tipo === 'arras_con_cargas' }">
                         <div class="card-icon card-icon-orange">
                             <i data-lucide="building"></i>
                         </div>
@@ -221,7 +230,7 @@
 
                     <!-- Alquiler -->
                     <div class="contract-type-card" @click="selectContractType('alquiler')"
-                         :class="{ 'selected': contrato.tipo === 'alquiler' }">
+                        :class="{ 'selected': contrato.tipo === 'alquiler' }">
                         <div class="card-icon card-icon-green">
                             <i data-lucide="key"></i>
                         </div>
@@ -231,14 +240,15 @@
                 </div>
 
                 <button class="btn-primary btn-lg btn-continue" @click="navigateTo('editor')"
-                        :disabled="!contrato.tipo">
+                    :disabled="!contrato.tipo">
                     Continuar con el editor <i data-lucide="arrow-right"></i>
                 </button>
             </div>
         </section>
 
         <!-- ========== EDITOR DUAL (Formulario + Preview) ========== -->
-        <section id="editor-view" class="view" x-show="currentView === 'editor'" x-transition:enter="fade-in" x-transition:leave="fade-out">
+        <section id="editor-view" class="view" x-show="currentView === 'editor'" x-transition:enter="fade-in"
+            x-transition:leave="fade-out">
             <div class="editor-container">
                 <!-- Barra superior del editor -->
                 <div class="editor-toolbar">
@@ -246,7 +256,9 @@
                         <i data-lucide="arrow-left"></i> Volver
                     </button>
                     <div class="editor-toolbar-title" style="flex: 1; justify-content: flex-start; margin-left:1rem;">
-                        <input type="text" x-model="contrato.titulo" class="title-input" placeholder="Nombre del contrato" style="font-size: 1.1rem; font-weight: bold; border: none; background: transparent; color: var(--text-primary); border-bottom: 1px dashed var(--border-color); padding: 0.2rem; outline: none; width: 60%; transition: border-color 0.2s;">
+                        <input type="text" x-model="contrato.titulo" class="title-input"
+                            placeholder="Nombre del contrato"
+                            style="font-size: 1.1rem; font-weight: bold; border: none; background: transparent; color: var(--text-primary); border-bottom: 1px dashed var(--border-color); padding: 0.2rem; outline: none; width: 60%; transition: border-color 0.2s;">
                         <span class="editor-badge" x-text="getContractTypeLabel()"></span>
                     </div>
                     <button class="btn-primary btn-download" @click="handleDownload()">
@@ -265,16 +277,16 @@
                         <!-- Zona de subida de documentos con IA -->
                         <div class="upload-section">
                             <div class="upload-zone" id="drop-zone"
-                                 @click="document.getElementById('file-input').click()"
-                                 @dragover.prevent="dragOver = true"
-                                 @dragleave.prevent="dragOver = false"
-                                 @drop.prevent="handleFileDrop($event)"
-                                 :class="{ 'drag-active': dragOver, 'upload-success': uploadSuccess }">
+                                @click="document.getElementById('file-input').click()"
+                                @dragover.prevent="dragOver = true" @dragleave.prevent="dragOver = false"
+                                @drop.prevent="handleFileDrop($event)"
+                                :class="{ 'drag-active': dragOver, 'upload-success': uploadSuccess }">
                                 <template x-if="!uploading && !uploadSuccess">
                                     <div class="upload-content">
                                         <div class="upload-icon"><i data-lucide="cloud-upload"></i></div>
                                         <p class="upload-title">Sube tu Nota Simple o DNI</p>
-                                        <p class="upload-hint">Arrastra aquí o haz clic para seleccionar (PDF/Imagen)</p>
+                                        <p class="upload-hint">Arrastra aquí o haz clic para seleccionar (PDF/Imagen)
+                                        </p>
                                     </div>
                                 </template>
                                 <template x-if="uploading">
@@ -286,20 +298,21 @@
                                 </template>
                                 <template x-if="uploadSuccess">
                                     <div class="upload-content">
-                                        <div class="upload-icon upload-icon-success"><i data-lucide="check-circle"></i></div>
+                                        <div class="upload-icon upload-icon-success"><i data-lucide="check-circle"></i>
+                                        </div>
                                         <p class="upload-title">¡Datos extraídos con éxito!</p>
                                         <p class="upload-hint">Los campos se han rellenado automáticamente</p>
                                     </div>
                                 </template>
                                 <input type="file" id="file-input" hidden accept=".pdf,.jpg,.jpeg,.png"
-                                       @change="handleFileUpload($event)">
+                                    @change="handleFileUpload($event)">
                             </div>
                         </div>
 
                         <!-- Formulario de vendedores -->
                         <div class="form-section">
                             <div class="form-section-header">
-                                <h4><i data-lucide="user-check"></i> Vendedores</h4>
+                                <h4><i data-lucide="user-check"></i> <span x-text="contrato.tipo === 'alquiler' ? 'Arrendadores' : 'Vendedores'"></span></h4>
                                 <button type="button" class="btn-add" @click="addVendedor()">
                                     <i data-lucide="plus"></i> Añadir
                                 </button>
@@ -307,16 +320,26 @@
                             <template x-for="(vendedor, index) in contrato.vendedores" :key="'v-'+vendedor.id">
                                 <div class="person-block">
                                     <div class="person-block-header">
-                                        <span class="person-label" x-text="'Vendedor ' + (index + 1)"></span>
+                                        <span class="person-label" x-text="(contrato.tipo === 'alquiler' ? 'Arrendador ' : 'Vendedor ') + (index + 1)"></span>
                                         <button type="button" class="btn-remove" x-show="contrato.vendedores.length > 1"
-                                                @click="removeVendedor(index)">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+                                            @click="removeVendedor(index)">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                stroke-linecap="round" stroke-linejoin="round"
+                                                class="lucide lucide-trash-2">
+                                                <path d="M3 6h18" />
+                                                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                                                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                                                <line x1="10" x2="10" y1="11" y2="17" />
+                                                <line x1="14" x2="14" y1="11" y2="17" />
+                                            </svg>
                                         </button>
                                     </div>
                                     <div class="form-grid">
                                         <div class="form-group">
                                             <label>Nombre completo</label>
-                                            <input type="text" x-model="vendedor.nombre" placeholder="Ej: Juan Pérez García">
+                                            <input type="text" x-model="vendedor.nombre"
+                                                placeholder="Ej: Juan Pérez García">
                                         </div>
                                         <div class="form-group">
                                             <label>DNI / NIE</label>
@@ -324,7 +347,8 @@
                                         </div>
                                         <div class="form-group form-group-full">
                                             <label>Domicilio</label>
-                                            <input type="text" x-model="vendedor.domicilio" placeholder="Ej: Calle Mayor 15, Madrid">
+                                            <input type="text" x-model="vendedor.domicilio"
+                                                placeholder="Ej: Calle Mayor 15, Madrid">
                                         </div>
                                     </div>
                                 </div>
@@ -334,7 +358,7 @@
                         <!-- Formulario de compradores -->
                         <div class="form-section">
                             <div class="form-section-header">
-                                <h4><i data-lucide="user-plus"></i> Compradores</h4>
+                                <h4><i data-lucide="user-plus"></i> <span x-text="contrato.tipo === 'alquiler' ? 'Arrendatarios' : 'Compradores'"></span></h4>
                                 <button type="button" class="btn-add" @click="addComprador()">
                                     <i data-lucide="plus"></i> Añadir
                                 </button>
@@ -342,16 +366,26 @@
                             <template x-for="(comprador, index) in contrato.compradores" :key="'c-'+comprador.id">
                                 <div class="person-block">
                                     <div class="person-block-header">
-                                        <span class="person-label" x-text="'Comprador ' + (index + 1)"></span>
-                                        <button type="button" class="btn-remove" x-show="contrato.compradores.length > 1"
-                                                @click="removeComprador(index)">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+                                        <span class="person-label" x-text="(contrato.tipo === 'alquiler' ? 'Arrendatario ' : 'Comprador ') + (index + 1)"></span>
+                                        <button type="button" class="btn-remove"
+                                            x-show="contrato.compradores.length > 1" @click="removeComprador(index)">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                stroke-linecap="round" stroke-linejoin="round"
+                                                class="lucide lucide-trash-2">
+                                                <path d="M3 6h18" />
+                                                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                                                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                                                <line x1="10" x2="10" y1="11" y2="17" />
+                                                <line x1="14" x2="14" y1="11" y2="17" />
+                                            </svg>
                                         </button>
                                     </div>
                                     <div class="form-grid">
                                         <div class="form-group">
                                             <label>Nombre completo</label>
-                                            <input type="text" x-model="comprador.nombre" placeholder="Ej: María López Ruiz">
+                                            <input type="text" x-model="comprador.nombre"
+                                                placeholder="Ej: María López Ruiz">
                                         </div>
                                         <div class="form-group">
                                             <label>DNI / NIE</label>
@@ -359,7 +393,8 @@
                                         </div>
                                         <div class="form-group form-group-full">
                                             <label>Domicilio</label>
-                                            <input type="text" x-model="comprador.domicilio" placeholder="Ej: Av. Diagonal 200, Barcelona">
+                                            <input type="text" x-model="comprador.domicilio"
+                                                placeholder="Ej: Av. Diagonal 200, Barcelona">
                                         </div>
                                     </div>
                                 </div>
@@ -374,7 +409,8 @@
                             <div class="form-grid">
                                 <div class="form-group form-group-full">
                                     <label>Dirección de la finca</label>
-                                    <input type="text" x-model="contrato.finca.direccion" placeholder="Ej: Calle Velázquez 42, 3ºB, Madrid">
+                                    <input type="text" x-model="contrato.finca.direccion"
+                                        placeholder="Ej: Calle Velázquez 42, 3ºB, Madrid">
                                 </div>
                                 <div class="form-group">
                                     <label>Precio total (€)</label>
@@ -416,11 +452,13 @@
                                 </div>
                                 <div class="form-group">
                                     <label>Ciudad juzgados</label>
-                                    <input type="text" x-model="contrato.finca.ciudad_juzgados" placeholder="Ej: Madrid">
+                                    <input type="text" x-model="contrato.finca.ciudad_juzgados"
+                                        placeholder="Ej: Madrid">
                                 </div>
                                 <div class="form-group form-group-full">
                                     <label>Referencia Catastral</label>
-                                    <input type="text" x-model="contrato.finca.referencia_catastral" placeholder="Ej: 9872023VH5797S0001WX">
+                                    <input type="text" x-model="contrato.finca.referencia_catastral"
+                                        placeholder="Ej: 9872023VH5797S0001WX">
                                 </div>
                             </div>
                         </div>
@@ -435,7 +473,8 @@
                             <div class="form-grid">
                                 <div class="form-group form-group-full">
                                     <label>Resto a abonar en escritura (€)</label>
-                                    <input type="text" x-model="contrato.extra.resto_escritura" placeholder="Ej: 216.000">
+                                    <input type="text" x-model="contrato.extra.resto_escritura"
+                                        placeholder="Ej: 216.000">
                                 </div>
                             </div>
                         </div>
@@ -448,7 +487,8 @@
                             <div class="form-grid">
                                 <div class="form-group form-group-full">
                                     <label>Carga registral (hipoteca u otra)</label>
-                                    <input type="text" x-model="contrato.extra.descripcion_carga" placeholder="Ej: Hipoteca con la entidad Banco Santander">
+                                    <input type="text" x-model="contrato.extra.descripcion_carga"
+                                        placeholder="Ej: Hipoteca con la entidad Banco Santander">
                                 </div>
                             </div>
                         </div>
@@ -461,7 +501,8 @@
                             <div class="form-grid">
                                 <div class="form-group">
                                     <label>Duración (años)</label>
-                                    <input type="number" min="1" x-model="contrato.extra.duracion_anos" placeholder="Ej: 1">
+                                    <input type="number" min="1" x-model="contrato.extra.duracion_anos"
+                                        placeholder="Ej: 1">
                                 </div>
                                 <div class="form-group">
                                     <label>Fecha de entrada</label>
@@ -488,7 +529,8 @@
                                 </div>
                                 <div class="form-group form-group-full">
                                     <label>IBAN arrendador</label>
-                                    <input type="text" x-model="contrato.extra.iban_arrendador" placeholder="Ej: ES12 1234 1234 1234 1234 1234">
+                                    <input type="text" x-model="contrato.extra.iban_arrendador"
+                                        placeholder="Ej: ES12 1234 1234 1234 1234 1234">
                                 </div>
                             </div>
                         </div>
@@ -505,17 +547,27 @@
                                 <template x-for="(clausula, i) in contrato.clausulas" :key="'cl-'+clausula.id">
                                     <div style="display: flex; gap: 0.5rem; align-items: flex-start;">
                                         <div style="flex: 1;">
-                                            <textarea x-model="clausula.texto" 
-                                                      placeholder="Escribe aquí la cláusula personalizada..." 
-                                                      class="form-textarea" 
-                                                      style="width: 100%; min-height: 80px;"></textarea>
+                                            <textarea x-model="clausula.texto"
+                                                placeholder="Escribe aquí la cláusula personalizada..."
+                                                class="form-textarea" style="width: 100%; min-height: 80px;"></textarea>
                                         </div>
-                                        <button type="button" @click="removeClausula(i)" class="btn-icon btn-icon-danger" style="margin-top: 0.5rem;">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+                                        <button type="button" @click="removeClausula(i)"
+                                            class="btn-icon btn-icon-danger" style="margin-top: 0.5rem;">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                stroke-linecap="round" stroke-linejoin="round"
+                                                class="lucide lucide-trash-2">
+                                                <path d="M3 6h18" />
+                                                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                                                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                                                <line x1="10" x2="10" y1="11" y2="17" />
+                                                <line x1="14" x2="14" y1="11" y2="17" />
+                                            </svg>
                                         </button>
                                     </div>
                                 </template>
-                                <div x-show="contrato.clausulas.length === 0" style="text-align: center; color: var(--text-tertiary); font-style: italic; font-size: 0.85rem; padding: 1rem;">
+                                <div x-show="contrato.clausulas.length === 0"
+                                    style="text-align: center; color: var(--text-tertiary); font-style: italic; font-size: 0.85rem; padding: 1rem;">
                                     Pulsa el botón de arriba para añadir una cláusula vacía.
                                 </div>
                             </div>
@@ -537,7 +589,8 @@
         </section>
 
         <!-- ========== PANEL DE USUARIO (DASHBOARD) ========== -->
-        <section id="dashboard-view" class="view" x-show="currentView === 'dashboard'" x-transition:enter="fade-in" x-transition:leave="fade-out">
+        <section id="dashboard-view" class="view" x-show="currentView === 'dashboard'" x-transition:enter="fade-in"
+            x-transition:leave="fade-out">
             <div class="dashboard-container">
                 <!-- Saludo -->
                 <div class="dashboard-greeting">
@@ -617,8 +670,11 @@
                                     </div>
                                     <div class="contract-card-info">
                                         <div style="display: flex; align-items: center; gap: 0.5rem;">
-                                            <p class="contract-card-address" x-text="c.titulo" style="font-size: 1rem; font-weight: bold; margin:0;"></p>
-                                            <button @click.stop="renameContract(c)" style="background:none; border:none; cursor:pointer; color: var(--text-tertiary); padding: 0.2rem;" title="Renombrar contrato">
+                                            <p class="contract-card-address" x-text="c.titulo"
+                                                style="font-size: 1rem; font-weight: bold; margin:0;"></p>
+                                            <button @click.stop="renameContract(c)"
+                                                style="background:none; border:none; cursor:pointer; color: var(--text-tertiary); padding: 0.2rem;"
+                                                title="Renombrar contrato">
                                                 <i data-lucide="edit-2" style="width: 14px; height: 14px;"></i>
                                             </button>
                                         </div>
@@ -628,7 +684,8 @@
                                     </div>
                                 </div>
                                 <div class="contract-card-right">
-                                    <span class="contract-status" :class="'status-' + c.estado" x-text="c.estadoLabel"></span>
+                                    <span class="contract-status" :class="'status-' + c.estado"
+                                        x-text="c.estadoLabel"></span>
                                     <span class="contract-price" x-text="c.precio"></span>
                                 </div>
                             </div>
@@ -653,7 +710,8 @@
     <!-- ============================================ -->
     <!--            MODAL DE AUTENTICACIÓN            -->
     <!-- ============================================ -->
-    <div id="auth-modal" class="modal-overlay" x-show="showAuthModal" x-transition:enter="modal-enter" x-transition:leave="modal-leave" @click.self="showAuthModal = false">
+    <div id="auth-modal" class="modal-overlay" x-show="showAuthModal" x-transition:enter="modal-enter"
+        x-transition:leave="modal-leave" @click.self="showAuthModal = false">
         <div class="auth-card modal-content" @click.stop>
             <!-- Botón cerrar -->
             <button class="close-modal" @click="showAuthModal = false"><i data-lucide="x"></i></button>
@@ -661,7 +719,7 @@
             <!-- Encabezado dinámico según el modo -->
             <div class="auth-header">
                 <div class="auth-logo">
-                    <img src="/static/imagenes/logo.svg" alt="ArrasPro" class="logo-img logo-img-lg">
+                    <img src="/static/imagenes/logo.png" alt="ArrasPro" class="logo-img logo-img-lg">
                 </div>
                 <template x-if="authMode === 'login'">
                     <div>
@@ -692,9 +750,9 @@
             <!-- Tabs Login / Registro (ocultos en modo forgot/reset) -->
             <div class="tabs" x-show="authMode === 'login' || authMode === 'signup'">
                 <button class="tab-btn" :class="{ 'active': authMode === 'login' }"
-                        @click="authMode = 'login'; authError = ''">Iniciar Sesión</button>
+                    @click="authMode = 'login'; authError = ''">Iniciar Sesión</button>
                 <button class="tab-btn" :class="{ 'active': authMode === 'signup' }"
-                        @click="authMode = 'signup'; authError = ''">Registrarse</button>
+                    @click="authMode = 'signup'; authError = ''">Registrarse</button>
             </div>
 
             <!-- Formulario LOGIN -->
@@ -719,7 +777,9 @@
                 </button>
                 <!-- Enlace olvidé contraseña: SOLO SI HAY ERROR -->
                 <p style="text-align: center; margin-top: 0.5rem;" x-show="authError" x-transition>
-                    <a href="#" @click.prevent="authMode = 'forgot'; authError = ''" style="color: var(--primary); font-size: 0.85rem; text-decoration: none; font-weight: 500;">¿Olvidaste tu contraseña?</a>
+                    <a href="#" @click.prevent="authMode = 'forgot'; authError = ''"
+                        style="color: var(--primary); font-size: 0.85rem; text-decoration: none; font-weight: 500;">¿Olvidaste
+                        tu contraseña?</a>
                 </p>
             </form>
 
@@ -753,7 +813,8 @@
             </form>
 
             <!-- Formulario FORGOT PASSWORD -->
-            <form class="auth-form" x-show="authMode === 'forgot'" @submit.prevent="handleForgotPassword()" x-transition>
+            <form class="auth-form" x-show="authMode === 'forgot'" @submit.prevent="handleForgotPassword()"
+                x-transition>
                 <div class="input-group">
                     <label>EMAIL DE TU CUENTA</label>
                     <div class="input-wrapper">
@@ -766,7 +827,9 @@
                     <span x-show="authLoading" class="btn-loading">Enviando...</span>
                 </button>
                 <p style="text-align: center; margin-top: 0.5rem;">
-                    <a href="#" @click.prevent="authMode = 'login'; authError = ''" style="color: var(--text-tertiary); font-size: 0.85rem; text-decoration: none;">← Volver al inicio de sesión</a>
+                    <a href="#" @click.prevent="authMode = 'login'; authError = ''"
+                        style="color: var(--text-tertiary); font-size: 0.85rem; text-decoration: none;">← Volver al
+                        inicio de sesión</a>
                 </p>
             </form>
 
@@ -793,7 +856,8 @@
             </form>
 
             <!-- Separador (solo en login/signup) -->
-            <div class="divider" x-show="authMode === 'login' || authMode === 'signup'"><span>o continúa con</span></div>
+            <div class="divider" x-show="authMode === 'login' || authMode === 'signup'"><span>o continúa con</span>
+            </div>
 
             <!-- Botones reales de Google GSI -->
             <div class="google-signin-wrapper" x-show="authMode === 'login' || authMode === 'signup'">
@@ -825,10 +889,11 @@
         <div class="footer-content">
             <div class="footer-left">
                 <div class="logo">
-                    <img src="/static/imagenes/logo.svg" alt="ArrasPro" class="logo-img logo-img-sm">
+                    <img src="/static/imagenes/logo.png" alt="ArrasPro" class="logo-img logo-img-sm">
                     <span class="logo-text">ArrasPro</span>
                 </div>
-                <p class="footer-desc">La herramienta definitiva para la generación de contratos inmobiliarios profesionales.</p>
+                <p class="footer-desc">La herramienta definitiva para la generación de contratos inmobiliarios
+                    profesionales.</p>
             </div>
             <div class="footer-center">
                 <h4>Producto</h4>

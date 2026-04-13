@@ -1,0 +1,29 @@
+# ============================================================
+# .dockerignore - Archivos excluidos al construir la imagen
+# ============================================================
+
+# Entorno virtual de Python
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# Git
+.git/
+.gitignore
+
+# Variables de entorno locales (se usan las de .env.docker)
+.env
+
+# Archivos del sistema operativo
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+
+# Documentación del agente
+AGENT.md
+README.md

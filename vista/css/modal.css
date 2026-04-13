@@ -9,7 +9,8 @@
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0.5);
-    display: flex; /* Alpine.js controla la visibilidad con x-show */
+    display: flex;
+    /* Alpine.js controla la visibilidad con x-show */
     justify-content: center;
     align-items: center;
     z-index: var(--z-modal);
@@ -80,9 +81,11 @@
 }
 
 .logo-img-lg {
-    height: 48px;
+    height: 64px;
     width: auto;
     max-width: 240px;
+    display: block;
+    margin: 0 auto;
 }
 
 .auth-logo .logo-icon i {
@@ -249,7 +252,8 @@
     align-items: center;
     width: 100%;
     margin-top: 1.25rem;
-    min-height: 40px; /* Evitar saltos de layout */
+    min-height: 40px;
+    /* Evitar saltos de layout */
 }
 
 /* Forzar que el div de Google se comporte como bloque centrado */
@@ -287,7 +291,17 @@
 }
 
 @keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-4px); }
-    75% { transform: translateX(4px); }
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-4px);
+    }
+
+    75% {
+        transform: translateX(4px);
+    }
 }
