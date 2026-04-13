@@ -96,3 +96,4 @@ def api_status():
 # IMPORTANTE: Esto va al final para no interceptar las rutas de la API
 app.mount("/css", StaticFiles(directory=os.path.join(VISTA_DIR, "css")), name="css")
 app.mount("/js", StaticFiles(directory=os.path.join(VISTA_DIR, "js")), name="js")
+app.mount("/static", StaticFiles(directory=os.path.join(BASE_DIR, "static")), name="static")

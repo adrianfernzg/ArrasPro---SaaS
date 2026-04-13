@@ -79,6 +79,12 @@
     border-radius: var(--radius-lg);
 }
 
+.logo-img-lg {
+    height: 48px;
+    width: auto;
+    max-width: 240px;
+}
+
 .auth-logo .logo-icon i {
     width: 24px;
     height: 24px;

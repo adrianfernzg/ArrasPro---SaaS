@@ -15,6 +15,9 @@
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/static/imagenes/logo.svg">
+
     <!-- Scripts de lógica (Deben cargar antes que Alpine) -->
     <script src="js/app.js?v=6.0"></script>
 
@@ -53,7 +56,7 @@
         <div class="header-content">
             <!-- Logo -->
             <div class="logo" @click="navigateTo('landing')" style="cursor:pointer;">
-                <div class="logo-icon"><i data-lucide="file-text"></i></div>
+                <img src="/static/imagenes/logo.svg" alt="ArrasPro" class="logo-img">
                 <span class="logo-text">ArrasPro</span>
             </div>
 
@@ -658,7 +661,7 @@
             <!-- Encabezado dinámico según el modo -->
             <div class="auth-header">
                 <div class="auth-logo">
-                    <div class="logo-icon"><i data-lucide="file-text"></i></div>
+                    <img src="/static/imagenes/logo.svg" alt="ArrasPro" class="logo-img logo-img-lg">
                 </div>
                 <template x-if="authMode === 'login'">
                     <div>
@@ -822,7 +825,7 @@
         <div class="footer-content">
             <div class="footer-left">
                 <div class="logo">
-                    <div class="logo-icon logo-icon-sm"><i data-lucide="file-text"></i></div>
+                    <img src="/static/imagenes/logo.svg" alt="ArrasPro" class="logo-img logo-img-sm">
                     <span class="logo-text">ArrasPro</span>
                 </div>
                 <p class="footer-desc">La herramienta definitiva para la generación de contratos inmobiliarios profesionales.</p>
