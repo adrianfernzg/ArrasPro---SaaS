@@ -1,0 +1,349 @@
+/* ===================================================
+   DASHBOARD.CSS - Panel de usuario
+   Diseño basado en la referencia visual proporcionada
+   =================================================== */
+
+.dashboard-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem 2rem 4rem;
+}
+
+/* --- Saludo / Greeting --- */
+.dashboard-greeting {
+    margin-bottom: 2rem;
+}
+
+.greeting-title {
+    font-size: var(--font-size-3xl);
+    font-weight: 800;
+    color: var(--text-primary);
+    letter-spacing: -0.02em;
+}
+
+.greeting-subtitle {
+    font-size: var(--font-size-base);
+    color: var(--text-secondary);
+    margin-top: 0.25rem;
+}
+
+/* --- Grid de estadísticas --- */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.stat-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-xl);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    transition: all var(--transition-base);
+}
+
+.stat-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+.stat-card-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.stat-card-icon i {
+    width: 20px;
+    height: 20px;
+}
+
+.stat-card-icon-blue {
+    background: var(--primary-light);
+    color: var(--primary);
+}
+
+.stat-card-icon-orange {
+    background: var(--warning-light);
+    color: var(--warning);
+}
+
+.stat-card-icon-green {
+    background: var(--success-light);
+    color: var(--success);
+}
+
+.stat-card-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-card-label {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.stat-card-value {
+    font-size: var(--font-size-3xl);
+    font-weight: 800;
+    color: var(--text-primary);
+    letter-spacing: -0.02em;
+    line-height: 1;
+    margin-top: 0.25rem;
+}
+
+/* --- Botón crear contrato (Dashboard) --- */
+.dashboard-container .btn-full {
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    font-size: var(--font-size-base);
+    border-radius: var(--radius-xl);
+}
+
+/* --- Banner de alerta --- */
+.alert-banner {
+    margin-bottom: 1.5rem;
+}
+
+.alert-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.25rem;
+    border-radius: var(--radius-xl);
+    margin-bottom: 0.75rem;
+    animation: fadeIn 0.3s ease;
+}
+
+.alert-info {
+    background: var(--primary);
+    color: white;
+}
+
+.alert-warning {
+    background: var(--warning);
+    color: white;
+}
+
+.alert-content {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.alert-content i {
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+    opacity: 0.85;
+}
+
+.alert-title {
+    font-weight: 700;
+    font-size: var(--font-size-sm);
+}
+
+.alert-text {
+    font-size: var(--font-size-xs);
+    opacity: 0.9;
+    margin-top: 1px;
+}
+
+.alert-close {
+    background: none;
+    border: none;
+    color: white;
+    opacity: 0.7;
+    cursor: pointer;
+    padding: 0.25rem;
+    border-radius: var(--radius-sm);
+    transition: opacity var(--transition-fast);
+}
+
+.alert-close:hover {
+    opacity: 1;
+}
+
+.alert-close i {
+    width: 18px;
+    height: 18px;
+}
+
+/* --- Sección de contratos recientes --- */
+.contracts-section {
+    margin-top: 0.5rem;
+}
+
+.contracts-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.contracts-title {
+    font-size: var(--font-size-lg);
+    font-weight: 800;
+    color: var(--text-primary);
+}
+
+.contracts-link {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--primary);
+}
+
+.contracts-link:hover {
+    text-decoration: underline;
+}
+
+/* --- Tarjeta de contrato --- */
+.contracts-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.contract-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-xl);
+    padding: 1.25rem 1.5rem;
+    cursor: pointer;
+    transition: all var(--transition-base);
+}
+
+.contract-card:hover {
+    box-shadow: var(--shadow-md);
+    border-color: var(--primary-light);
+    transform: translateY(-1px);
+}
+
+.contract-card-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.contract-card-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.contract-card-icon i {
+    width: 22px;
+    height: 22px;
+}
+
+.contract-card-icon.icon-home {
+    background: var(--primary-light);
+    color: var(--primary);
+}
+
+.contract-card-icon.icon-building {
+    background: #ede9fe;
+    color: #7c3aed;
+}
+
+.contract-card-address {
+    font-weight: 700;
+    font-size: var(--font-size-sm);
+    color: var(--text-primary);
+    margin-bottom: 2px;
+}
+
+.contract-card-meta {
+    font-size: var(--font-size-xs);
+    color: var(--text-tertiary);
+}
+
+.contract-card-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.25rem;
+}
+
+/* --- Badge de estado --- */
+.contract-status {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 0.15rem 0.6rem;
+    border-radius: var(--radius-full);
+}
+
+.status-enviado {
+    background: var(--primary-light);
+    color: var(--primary);
+}
+
+.status-firmado {
+    background: var(--success-light);
+    color: var(--success);
+}
+
+.status-borrador {
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
+}
+
+.status-vencido {
+    background: var(--danger-light);
+    color: var(--danger);
+}
+
+.contract-price {
+    font-weight: 800;
+    font-size: var(--font-size-base);
+    color: var(--text-primary);
+}
+
+/* --- Empty state --- */
+.empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: var(--bg-secondary);
+    border: 2px dashed var(--border-color);
+    border-radius: var(--radius-xl);
+}
+
+.empty-icon {
+    color: var(--text-tertiary);
+    margin-bottom: 1rem;
+}
+
+.empty-icon i {
+    width: 48px;
+    height: 48px;
+}
+
+.empty-state h3 {
+    font-size: var(--font-size-lg);
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.empty-state p {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    margin-bottom: 1.5rem;
+}

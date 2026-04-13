@@ -1,0 +1,46 @@
+**CONTRATO PRIVADO DE COMPRAVENTA (FINCA CON CARGAS)**
+
+En **[CIUDAD]**, a fecha de **[FECHA_CONTRATO]**.
+
+**REUNIDOS**
+
+De una parte, como la parte COMPRADORA:
+**[BLOQUE_COMPRADORES]**
+
+De otra parte, como la parte VENDEDORA:
+**[BLOQUE_VENDEDORES]**
+
+**MANIFIESTAN**
+
+I.- Que la parte VENDEDORA es propietaria del inmueble sito en **[DIRECCION_FINCA]**, con Referencia Catastral **[REFERENCIA_CATASTRAL]**.
+
+II.- Que dicho inmueble se encuentra grabado con la siguiente carga: **[DESCRIPCION_CARGA]** (ej. Hipoteca con la entidad Banco X).
+
+III.- Que ambas partes han convenido la compraventa del inmueble conforme a las siguientes:
+
+**ESTIPULACIONES**
+
+**PRIMERA. - OBJETO.**
+La parte VENDEDORA vende a la parte COMPRADORA, que compra, el inmueble descrito en el Manifiesto I.
+
+**SEGUNDA. - PRECIO Y RETENCIÓN POR CARGAS.**
+El precio total de la compraventa se fija en **[PRECIO_TOTAL]** EUROS. 
+Debido a la existencia de la carga mencionada en el Manifiesto II, las partes acuerdan:
+1. La parte COMPRADORA retendrá del precio final la cantidad necesaria para la cancelación económica de dicha carga en el momento de la escritura pública.
+2. El resto del precio, deducidas las arras de **[ARRAS_EUROS]** EUROS y la retención por carga, se entregará a la parte VENDEDORA mediante cheque bancario.
+
+**TERCERA. - CANCELACIÓN DE CARGAS.**
+La parte VENDEDORA se obliga a entregar la finca libre de cargas y gravámenes al momento de la firma de la escritura pública, siendo de su exclusivo cargo todos los gastos e impuestos que se devenguen por la cancelación (gastos notariales, registrales y de gestión).
+
+**CUARTA. - ESCRITURACIÓN.**
+La formalización de la escritura pública se realizará antes del día **[FECHA_LIMITE]**. La parte COMPRADORA elegirá la Notaría.
+
+**QUINTA. - GASTOS E IMPUESTOS.**
+Los gastos e impuestos derivados de la transmisión se abonarán conforme a Ley (Vendedor: Plusvalía; Comprador: ITP, Notaría y Registro).
+
+**SEXTA. - JURISDICCIÓN.**
+Las partes se someten a los Juzgados y Tribunales de **[CIUDAD_JUZGADOS]**.
+
+Y en prueba de conformidad, firman las partes por duplicado.
+
+LA PARTE COMPRADORA                            LA PARTE VENDEDORA

@@ -1,0 +1,46 @@
+**CONTRATO DE ARRENDAMIENTO DE VIVIENDA**
+
+En **[CIUDAD]**, a fecha de **[FECHA_CONTRATO]**.
+
+**REUNIDOS**
+
+De una parte, como ARRENDADOR/ES:
+**[BLOQUE_ARRENDADORES]**
+
+De otra parte, como ARRENDATARIO/S:
+**[BLOQUE_ARRENDATARIOS]**
+
+Ambas partes se reconocen capacidad legal suficiente para el otorgamiento del presente contrato de arrendamiento.
+
+**EXPONEN**
+
+I. Que la parte arrendadora es propietaria de la vivienda situada en:
+Dirección: **[DIRECCION_VIVIENDA]**
+Referencia Catastral: **[REFERENCIA_CATASTRAL]**
+
+II. Que la parte arrendataria está interesada en el alquiler de dicha vivienda para su uso exclusivo de residencia habitual.
+
+**CLAÚSULAS**
+
+**PRIMERA. - DURACIÓN.**
+El arrendamiento se pacta por un plazo de **[DURACION_AÑOS]** año/s, a contar desde el día **[FECHA_ENTRADA]**. El contrato se prorrogará obligatoriamente por plazos anuales hasta alcanzar una duración mínima de 5 años (o 7 si el arrendador es persona jurídica), conforme a la LAU.
+
+**SEGUNDA. - RENTA.**
+La renta anual fijada es de **[RENTA_ANUAL]** EUROS, a pagar en mensualidades anticipadas de **[RENTA_MENSUAL]** EUROS, dentro de los siete primeros días de cada mes.
+El pago se realizará mediante transferencia bancaria a la cuenta: **[IBAN_ARRENDADOR]**.
+
+**TERCERA. - FIANZA.**
+La parte arrendataria hace entrega en este acto de la suma de **[FIANZA_EUROS]** EUROS, equivalente a una mensualidad de renta, en concepto de fianza legal.
+
+**CUARTA. - GASTOS.**
+Los gastos de suministros (luz, agua, gas) debidamente individualizados mediante aparato contador serán de cuenta exclusiva del ARRENDATARIO. Los gastos de comunidad e IBI serán por cuenta del **[PAGADOR_IBI_COMUNIDAD]**.
+
+**QUINTA. - DESTINO.**
+La vivienda se alquila exclusivamente para satisfacer la necesidad permanente de vivienda del arrendatario, prohibiéndose el subarriendo total o parcial.
+
+**SEXTA. - JURISDICCIÓN.**
+Para cualquier controversia que pudiera surgir, las partes se someten a los Juzgados y Tribunales de **[CIUDAD_JUZGADOS]**.
+
+Y en prueba de conformidad, firman las partes el presente contrato por duplicado.
+
+EL ARRENDADOR                                 EL ARRENDATARIO

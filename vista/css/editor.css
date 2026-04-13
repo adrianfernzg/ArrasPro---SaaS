@@ -1,0 +1,539 @@
+/* ===================================================
+   EDITOR.CSS - Editor dual (Formulario + Preview)
+   Mejorado para fluidez y UX
+   =================================================== */
+
+.editor-container {
+    max-width: var(--max-width-2xl);
+    margin: 0 auto;
+    padding: 0 1.5rem 2rem;
+}
+
+/* --- Barra de herramientas del editor --- */
+.editor-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 1.5rem;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.editor-toolbar-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 700;
+    font-size: var(--font-size-base);
+    color: var(--text-primary);
+}
+
+.editor-toolbar-title i {
+    width: 20px;
+    height: 20px;
+    color: var(--primary);
+}
+
+.editor-badge {
+    background: var(--primary-light);
+    color: var(--primary);
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    padding: 0.2rem 0.6rem;
+    border-radius: var(--radius-full);
+    margin-left: 0.5rem;
+}
+
+.btn-download {
+    box-shadow: var(--shadow-primary);
+    transition: all var(--transition-base);
+}
+
+.btn-download:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+}
+
+.btn-download i {
+    width: 18px;
+    height: 18px;
+}
+
+/* --- Botón volver mejorado --- */
+.btn-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: none;
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-lg);
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    font-family: var(--font-family);
+}
+
+.btn-back:hover {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    border-color: var(--text-tertiary);
+}
+
+.btn-back i {
+    width: 16px;
+    height: 16px;
+}
+
+/* --- Layout dual --- */
+.editor-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    align-items: start;
+}
+
+/* --- Panel genérico --- */
+.editor-panel {
+    background: var(--bg-secondary);
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+    transition: box-shadow var(--transition-base);
+}
+
+.editor-panel:hover {
+    box-shadow: var(--shadow-md);
+}
+
+.panel-header {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border-light);
+    background: var(--bg-tertiary);
+}
+
+.panel-header h3 {
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.panel-header h3 i {
+    width: 16px;
+    height: 16px;
+}
+
+/* --- Formulario del editor --- */
+.editor-form {
+    max-height: calc(100vh - 160px);
+    overflow-y: auto;
+    scroll-behavior: smooth;
+}
+
+/* Scrollbar estilizado */
+.editor-form::-webkit-scrollbar {
+    width: 6px;
+}
+
+.editor-form::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.editor-form::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: var(--radius-full);
+}
+
+.editor-form::-webkit-scrollbar-thumb:hover {
+    background: var(--text-tertiary);
+}
+
+/* --- Zona de subida de archivos --- */
+.upload-section {
+    padding: 1.5rem;
+}
+
+.upload-zone {
+    border: 2px dashed var(--border-color);
+    padding: 2rem 1.5rem;
+    border-radius: var(--radius-xl);
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background: var(--bg-primary);
+    position: relative;
+    overflow: hidden;
+}
+
+.upload-zone::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at center, rgba(37, 99, 235, 0.04) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.upload-zone:hover::before,
+.upload-zone.drag-active::before {
+    opacity: 1;
+}
+
+.upload-zone:hover,
+.upload-zone.drag-active {
+    border-color: var(--primary);
+    background: var(--primary-lighter);
+    transform: scale(1.01);
+}
+
+.upload-zone.upload-success {
+    border-color: var(--success);
+    background: var(--success-light);
+    border-style: solid;
+}
+
+.upload-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    position: relative;
+    z-index: 1;
+}
+
+.upload-icon {
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+    transition: transform 0.3s ease;
+}
+
+.upload-zone:hover .upload-icon {
+    transform: translateY(-3px);
+}
+
+.upload-icon i {
+    width: 40px;
+    height: 40px;
+}
+
+.upload-icon-success {
+    color: var(--success);
+}
+
+.upload-title {
+    font-weight: 700;
+    font-size: var(--font-size-sm);
+    color: var(--text-primary);
+}
+
+.upload-hint {
+    font-size: var(--font-size-xs);
+    color: var(--text-tertiary);
+}
+
+/* Spinner de carga */
+.upload-spinner {
+    width: 36px;
+    height: 36px;
+    border: 3px solid var(--border-color);
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-bottom: 0.5rem;
+}
+
+/* --- Secciones del formulario --- */
+.form-section {
+    padding: 1.25rem 1.5rem;
+    border-top: 1px solid var(--border-light);
+    animation: fadeIn 0.3s ease;
+}
+
+.form-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.form-section-header h4 {
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.form-section-header h4 i {
+    width: 18px;
+    height: 18px;
+    color: var(--primary);
+}
+
+/* --- Botones añadir / eliminar --- */
+.btn-add {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    background: var(--primary-lighter);
+    color: var(--primary);
+    border: none;
+    padding: 0.4rem 0.8rem;
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: var(--font-family);
+}
+
+.btn-add:hover {
+    background: var(--primary-light);
+    transform: scale(1.05);
+}
+
+.btn-add:active {
+    transform: scale(0.97);
+}
+
+.btn-add i {
+    width: 14px;
+    height: 14px;
+}
+
+.btn-remove {
+    background: none;
+    border: none;
+    color: var(--text-tertiary);
+    cursor: pointer;
+    padding: 0.3rem;
+    border-radius: var(--radius-sm);
+    transition: all 0.2s ease;
+}
+
+.btn-remove:hover {
+    color: var(--danger);
+    background: var(--danger-light);
+    transform: scale(1.1);
+}
+
+.btn-remove i {
+    width: 16px;
+    height: 16px;
+}
+
+/* --- Bloque de persona (vendedor/comprador) --- */
+.person-block {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-lg);
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+    transition: all 0.25s ease;
+    animation: slideUp 0.3s ease;
+}
+
+.person-block:hover {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.06);
+}
+
+.person-block-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.person-label {
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+    color: var(--primary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* --- Grid del formulario --- */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group-full {
+    grid-column: 1 / -1;
+}
+
+.form-group label {
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    color: var(--text-tertiary);
+    margin-bottom: 0.35rem;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.form-group input,
+.form-group select,
+.form-textarea {
+    width: 100%;
+    padding: 0.6rem 0.8rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    font-size: var(--font-size-sm);
+    font-family: var(--font-family);
+    transition: all 0.2s ease;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.form-group input:focus,
+.form-textarea:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    background: var(--bg-primary);
+}
+
+.form-group input::placeholder {
+    color: var(--text-tertiary);
+}
+
+/* --- Panel de preview (vista previa) --- */
+.editor-preview {
+    position: sticky;
+    top: 88px;
+    max-height: calc(100vh - 100px);
+    overflow-y: auto;
+}
+
+/* Scrollbar del preview */
+.editor-preview::-webkit-scrollbar {
+    width: 4px;
+}
+
+.editor-preview::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.editor-preview::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: var(--radius-full);
+}
+
+.preview-paper {
+    padding: 1.5rem;
+}
+
+.paper-content {
+    background: white;
+    padding: 3rem 2.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    box-shadow: 
+        var(--shadow-md),
+        0 0 0 1px rgba(0, 0, 0, 0.03);
+    min-height: 600px;
+    font-size: 13px;
+    line-height: 1.8;
+    color: #1a1a1a;
+    position: relative;
+}
+
+/* Efecto de "papel apilado" */
+.paper-content::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 6px;
+    right: 6px;
+    height: 4px;
+    background: #f0f0f0;
+    border-radius: 0 0 var(--radius-md) var(--radius-md);
+    border: 1px solid var(--border-color);
+    border-top: none;
+}
+
+.paper-title {
+    text-align: center;
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #1a1a1a;
+}
+
+.paper-subtitle {
+    font-size: 14px;
+    font-weight: 700;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #333;
+}
+
+.paper-text {
+    margin-bottom: 0.75rem;
+    text-align: justify;
+    transition: color 0.2s ease;
+}
+
+.paper-text strong {
+    color: var(--primary);
+    transition: color 0.3s ease;
+}
+
+/* --- Firmas --- */
+.paper-signatures {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    margin-top: 4rem;
+    padding-top: 2rem;
+}
+
+.signature-block {
+    text-align: center;
+}
+
+.signature-line {
+    width: 100%;
+    height: 1px;
+    background: #999;
+    margin-bottom: 0.5rem;
+}
+
+.signature-block p {
+    font-size: 12px;
+    color: #666;
+}
+
+/* --- Animaciones del editor --- */
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}

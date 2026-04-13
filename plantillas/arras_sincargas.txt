@@ -1,0 +1,47 @@
+**CONTRATO PRIVADO DE COMPRAVENTA**
+
+En **[CIUDAD]**, a fecha de **[FECHA_CONTRATO]**.
+
+**REUNIDOS**
+
+De una parte, como la parte COMPRADORA:
+**[BLOQUE_COMPRADORES]**
+(Todos ellos mayores de edad y con plena capacidad legal).
+
+De otra parte, como la parte VENDEDORA:
+**[BLOQUE_VENDEDORES]**
+(Todos ellos mayores de edad y con plena capacidad legal).
+
+**MANIFIESTAN**
+
+I.- Que la parte VENDEDORA es propietaria del inmueble sito en **[DIRECCION_FINCA]**, con Referencia Catastral **[REFERENCIA_CATASTRAL]**.
+
+II.- Que dicho inmueble se encuentra libre de cargas, gravámenes, arrendatarios y al corriente en el pago de impuestos y gastos de comunidad.
+
+III.- Que ambas partes han convenido la compraventa del inmueble conforme a las siguientes:
+
+**ESTIPULACIONES**
+
+**PRIMERA. - OBJETO.**
+La parte VENDEDORA vende a la parte COMPRADORA, que compra, el inmueble descrito en el Manifiesto I como cuerpo cierto y en el estado actual de conservación que el comprador declara conocer.
+
+**SEGUNDA. - PRECIO.**
+El precio total de la compraventa se fija en **[PRECIO_TOTAL]** EUROS, que se abonará de la siguiente forma:
+1. La cantidad de **[ARRAS_EUROS]** EUROS, entregada previamente en concepto de arras.
+2. La cantidad de **[RESTO_ESCRITURA]** EUROS, que se abonará mediante cheque bancario en el acto de otorgamiento de la escritura pública.
+
+**TERCERA. - ESCRITURACIÓN Y POSESIÓN.**
+La entrega de llaves y de la posesión se realizará en el momento de la firma de la escritura pública. La parte COMPRADORA tendrá derecho a elegir Notaría, debiendo formalizarse la escritura antes del día **[FECHA_LIMITE]**.
+
+**CUARTA. - GASTOS.**
+Los gastos e impuestos derivados de la escritura se abonarán conforme a Ley: la parte VENDEDORA abonará la Plusvalía Municipal y la parte COMPRADORA abonará el ITP (Impuesto de Transmisiones), Notaría, Gestión y Registro.
+
+**QUINTA. - INCUMPLIMIENTO.**
+Si la parte COMPRADORA incumpliera su obligación de pago, perderá las cantidades entregadas. Si el incumplimiento fuera de la parte VENDEDORA, deberá devolver a la parte COMPRADORA el doble de las cantidades recibidas, conforme al artículo 1.454 del Código Civil.
+
+**SEXTA. - JURISDICCIÓN.**
+Para cualquier controversia, las partes se someten a los Juzgados y Tribunales de **[CIUDAD_JUZGADOS]**.
+
+Y en prueba de conformidad, firman las partes por duplicado.
+
+LA PARTE COMPRADORA                            LA PARTE VENDEDORA

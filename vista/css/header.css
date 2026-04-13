@@ -1,0 +1,239 @@
+/* ===================================================
+   HEADER.CSS - Barra de navegación superior
+   =================================================== */
+
+.main-header {
+    position: sticky;
+    top: 0;
+    z-index: var(--z-sticky);
+    padding: 0 2rem;
+    background: rgba(248, 250, 252, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid transparent;
+    transition: all var(--transition-base);
+}
+
+.main-header.header-scrolled {
+    border-bottom-color: var(--border-color);
+    box-shadow: var(--shadow-sm);
+}
+
+.header-content {
+    max-width: var(--max-width-xl);
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 72px;
+}
+
+/* --- Logo --- */
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.logo-icon {
+    background: var(--primary);
+    color: white;
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo-icon i {
+    width: 20px;
+    height: 20px;
+}
+
+.logo-icon-sm {
+    width: 30px;
+    height: 30px;
+}
+
+.logo-icon-sm i {
+    width: 16px;
+    height: 16px;
+}
+
+.logo-text {
+    font-weight: 800;
+    font-size: var(--font-size-xl);
+    color: var(--primary);
+    letter-spacing: -0.02em;
+}
+
+/* --- Acciones del Header --- */
+.header-nav {
+    display: flex;
+    align-items: center;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    position: relative;
+}
+
+.nav-link {
+    color: var(--text-secondary);
+    font-weight: 600;
+    font-size: var(--font-size-sm);
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-md);
+    transition: all var(--transition-fast);
+}
+
+.nav-link:hover {
+    color: var(--primary);
+    background: var(--primary-lighter);
+}
+
+.nav-btn-outline {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 0.55rem 1.2rem;
+    border-radius: var(--radius-lg);
+    font-weight: 600;
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+    transition: all var(--transition-base);
+    font-family: var(--font-family);
+}
+
+.nav-btn-outline:hover {
+    background: var(--primary-hover);
+    box-shadow: var(--shadow-primary);
+}
+
+/* --- Botón de icono (Notificaciones, etc.) --- */
+.icon-btn {
+    position: relative;
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: var(--radius-md);
+    transition: all var(--transition-fast);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon-btn:hover {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+}
+
+.icon-btn i {
+    width: 22px;
+    height: 22px;
+}
+
+.notification-badge {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    background: var(--danger);
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    min-width: 16px;
+    height: 16px;
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 4px;
+}
+
+/* --- Avatar de usuario --- */
+.user-avatar {
+    width: 38px;
+    height: 38px;
+    background: linear-gradient(135deg, var(--primary), #7c3aed);
+    color: white;
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+    transition: transform var(--transition-fast);
+}
+
+.user-avatar:hover {
+    transform: scale(1.05);
+}
+
+/* --- Menú desplegable del usuario --- */
+.user-dropdown {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    right: 0;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-xl);
+    min-width: 220px;
+    padding: 0.5rem;
+    z-index: var(--z-dropdown);
+}
+
+.dropdown-header {
+    padding: 0.75rem 1rem;
+}
+
+.dropdown-name {
+    font-weight: 700;
+    font-size: var(--font-size-sm);
+    color: var(--text-primary);
+}
+
+.dropdown-email {
+    font-size: var(--font-size-xs);
+    color: var(--text-tertiary);
+    margin-top: 2px;
+}
+
+.dropdown-divider {
+    height: 1px;
+    background: var(--border-light);
+    margin: 0.25rem 0;
+}
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.6rem 1rem;
+    border-radius: var(--radius-md);
+    color: var(--text-secondary);
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    transition: all var(--transition-fast);
+}
+
+.dropdown-item:hover {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+}
+
+.dropdown-item i {
+    width: 18px;
+    height: 18px;
+}
+
+.dropdown-item-danger:hover {
+    background: var(--danger-light);
+    color: var(--danger);
+}

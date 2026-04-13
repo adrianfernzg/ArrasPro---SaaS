@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ArrasPro - Generador de Contratos Inmobiliarios</title>
+    <meta name="description" content="Genera contratos de arras y alquiler de forma profesional con IA. ArrasPro automatiza la extracción de datos y la generación de PDFs legales.">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Scripts de lógica (Deben cargar antes que Alpine) -->
+    <script src="js/app.js?v=6.0"></script>
+
+    <!-- Alpine.js para reactividad -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- Google Identity Services (Google Auth Profesional) -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+    <!-- Estilos -->
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/header.css">
+    <link rel="stylesheet" href="css/landing.css">
+    <link rel="stylesheet" href="css/selector.css">
+    <link rel="stylesheet" href="css/editor.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/modal.css">
+    <link rel="stylesheet" href="css/footer.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/responsive.css">
+
+    <!-- Prevenir FOUC (parpadeo sin estilos) -->
+    <style>
+        [x-cloak] { display: none !important; }
+    </style>
+</head>
+
+<!-- Alpine.js: Estado global de la aplicación -->
+<body x-data="appState()" x-cloak x-init="init()">
+
+    <!-- ============================================ -->
+    <!--               HEADER PRINCIPAL               -->
+    <!-- ============================================ -->
+    <header class="main-header" :class="{ 'header-scrolled': scrolled }">
+        <div class="header-content">
+            <!-- Logo -->
+            <div class="logo" @click="navigateTo('landing')" style="cursor:pointer;">
+                <div class="logo-icon"><i data-lucide="file-text"></i></div>
+                <span class="logo-text">ArrasPro</span>
+            </div>
+
+            <!-- Navegación (Cambia según si el usuario está logueado o no) -->
+            <nav class="header-nav">
+                <!-- Navegación para usuario NO autenticado -->
+                <template x-if="!user.loggedIn">
+                    <div class="header-actions">
+                        <a href="#" class="nav-link" @click.prevent="openAuthModal('login')">Iniciar Sesión</a>
+                        <button class="nav-btn-outline" @click="openAuthModal('signup')">Registrarse</button>
+                    </div>
+                </template>
+
+                <!-- Navegación para usuario AUTENTICADO -->
+                <template x-if="user.loggedIn">
+                    <div class="header-actions">
+                        <!-- Notificaciones -->
+                        <button class="icon-btn" @click="toggleNotifications()" id="btn-notifications">
+                            <i data-lucide="bell"></i>
+                            <span class="notification-badge" x-show="notifications.length > 0" x-text="notifications.length"></span>
+                        </button>
+                        <!-- Avatar del usuario -->
+                        <div class="user-avatar" @click="toggleUserMenu()">
+                            <span x-text="user.nombre.charAt(0).toUpperCase()"></span>
+                        </div>
+                        <!-- Menú desplegable del usuario -->
+                        <div class="user-dropdown" x-show="showUserMenu" @click.outside="showUserMenu = false" x-transition>
+                            <div class="dropdown-header">
+                                <p class="dropdown-name" x-text="user.nombre"></p>
+                                <p class="dropdown-email" x-text="user.email"></p>
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <a href="#" class="dropdown-item" @click.prevent="navigateTo('dashboard')">
+                                <i data-lucide="layout-dashboard"></i> Panel de Usuario
+                            </a>
+                            <a href="#" class="dropdown-item" @click.prevent="navigateTo('editor')">
+                                <i data-lucide="file-plus"></i> Nuevo Contrato
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <a href="#" class="dropdown-item dropdown-item-danger" @click.prevent="logout()">
+                                <i data-lucide="log-out"></i> Cerrar Sesión
+                            </a>
+                        </div>
+                    </div>
+                </template>
+            </nav>
+        </div>
+    </header>
+
+    <!-- ============================================ -->
+    <!--             CONTENIDO PRINCIPAL              -->
+    <!-- ============================================ -->
+    <main class="app-main">
+
+        <!-- ========== LANDING PAGE ========== -->
+        <section id="landing-view" class="view" x-show="currentView === 'landing'" x-transition:enter="fade-in" x-transition:leave="fade-out">
+            <div class="hero-section">
+                <div class="hero-badge">
+                    <i data-lucide="sparkles"></i>
+                    <span>Potenciado con Inteligencia Artificial</span>
+                </div>
+                <h1 class="hero-title">
+                    Genera contratos<br>
+                    inmobiliarios <span class="text-gradient">en segundos</span>
+                </h1>
+                <p class="hero-subtitle">
+                    Crea tus contratos de arras y alquiler de forma rápida, segura y legal.
+                    Nuestra IA extrae automáticamente los datos de la Nota Simple y el DNI.
+                </p>
+                <div class="hero-actions">
+                    <button class="btn-primary btn-lg" @click="navigateTo('selector')">
+                        <i data-lucide="plus-circle"></i>
+                        Crear Nuevo Contrato
+                    </button>
+                    <button class="btn-ghost btn-lg" @click="scrollToFeatures()">
+                        <i data-lucide="info"></i>
+                        Cómo Funciona
+                    </button>
+                </div>
+
+                <!-- Estadísticas rápidas -->
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <span class="stat-number">2.500+</span>
+                        <span class="stat-label">Contratos generados</span>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-item">
+                        <span class="stat-number">98%</span>
+                        <span class="stat-label">Satisfacción</span>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-item">
+                        <span class="stat-number">&lt;2 min</span>
+                        <span class="stat-label">Tiempo medio</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección de características -->
+            <div class="features-section" id="features">
+                <h2 class="section-title">¿Cómo funciona?</h2>
+                <p class="section-subtitle">Tres sencillos pasos para tu contrato profesional</p>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon feature-icon-blue">
+                            <i data-lucide="upload"></i>
+                        </div>
+                        <h3>Sube tus documentos</h3>
+                        <p>Arrastra tu Nota Simple y DNI. Nuestra IA extraerá todos los datos automáticamente.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon feature-icon-green">
+                            <i data-lucide="edit-3"></i>
+                        </div>
+                        <h3>Revisa y edita</h3>
+                        <p>Visualiza el contrato en tiempo real. Añade o modifica cualquier dato antes de generar.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon feature-icon-purple">
+                            <i data-lucide="download"></i>
+                        </div>
+                        <h3>Descarga tu PDF</h3>
+                        <p>Genera un PDF profesional listo para firmar. Guarda todos tus contratos en tu panel.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========== SELECTOR DE TIPO DE CONTRATO ========== -->
+        <section id="selector-view" class="view" x-show="currentView === 'selector'" x-transition:enter="fade-in" x-transition:leave="fade-out">
+            <div class="selector-container">
+                <div class="selector-header">
+                    <button class="btn-back" @click="navigateTo('landing')">
+                        <i data-lucide="arrow-left"></i> Volver
+                    </button>
+                    <h2 class="selector-title">Selecciona el tipo de contrato</h2>
+                    <p class="selector-subtitle">Elige una opción para cargar la plantilla correspondiente</p>
+                </div>
+
+                <div class="contract-types-grid">
+                    <!-- Compraventa sin cargas -->
+                    <div class="contract-type-card" @click="selectContractType('arras_sin_cargas')"
+                         :class="{ 'selected': contrato.tipo === 'arras_sin_cargas' }">
+                        <div class="card-icon card-icon-blue">
+                            <i data-lucide="home"></i>
+                        </div>
+                        <h3>Compraventa<br>Sin Cargas</h3>
+                        <p>Contrato de arras estándar para inmuebles libres de cargas y gravámenes.</p>
+                        <div class="card-tag">Más popular</div>
+                    </div>
+
+                    <!-- Compraventa con cargas -->
+                    <div class="contract-type-card" @click="selectContractType('arras_con_cargas')"
+                         :class="{ 'selected': contrato.tipo === 'arras_con_cargas' }">
+                        <div class="card-icon card-icon-orange">
+                            <i data-lucide="building"></i>
+                        </div>
+                        <h3>Compraventa<br>Con Cargas</h3>
+                        <p>Para inmuebles con hipoteca vigente u otras cargas registrales pendientes.</p>
+                    </div>
+
+                    <!-- Alquiler -->
+                    <div class="contract-type-card" @click="selectContractType('alquiler')"
+                         :class="{ 'selected': contrato.tipo === 'alquiler' }">
+                        <div class="card-icon card-icon-green">
+                            <i data-lucide="key"></i>
+                        </div>
+                        <h3>Contrato de<br>Alquiler</h3>
+                        <p>Contrato de arrendamiento de vivienda habitual o de uso diferente.</p>
+                    </div>
+                </div>
+
+                <button class="btn-primary btn-lg btn-continue" @click="navigateTo('editor')"
+                        :disabled="!contrato.tipo">
+                    Continuar con el editor <i data-lucide="arrow-right"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- ========== EDITOR DUAL (Formulario + Preview) ========== -->
+        <section id="editor-view" class="view" x-show="currentView === 'editor'" x-transition:enter="fade-in" x-transition:leave="fade-out">
+            <div class="editor-container">
+                <!-- Barra superior del editor -->
+                <div class="editor-toolbar">
+                    <button class="btn-back" @click="navigateTo('selector')">
+                        <i data-lucide="arrow-left"></i> Volver
+                    </button>
+                    <div class="editor-toolbar-title" style="flex: 1; justify-content: flex-start; margin-left:1rem;">
+                        <input type="text" x-model="contrato.titulo" class="title-input" placeholder="Nombre del contrato" style="font-size: 1.1rem; font-weight: bold; border: none; background: transparent; color: var(--text-primary); border-bottom: 1px dashed var(--border-color); padding: 0.2rem; outline: none; width: 60%; transition: border-color 0.2s;">
+                        <span class="editor-badge" x-text="getContractTypeLabel()"></span>
+                    </div>
+                    <button class="btn-primary btn-download" @click="handleDownload()">
+                        <i data-lucide="download"></i> Descargar PDF
+                    </button>
+                </div>
+
+                <!-- Layout dual: Formulario | Preview -->
+                <div class="editor-layout">
+                    <!-- ===== PANEL IZQUIERDO: Formulario ===== -->
+                    <div class="editor-panel editor-form">
+                        <div class="panel-header">
+                            <h3><i data-lucide="clipboard-list"></i> Datos del Contrato</h3>
+                        </div>
+
+                        <!-- Zona de subida de documentos con IA -->
+                        <div class="upload-section">
+                            <div class="upload-zone" id="drop-zone"
+                                 @click="document.getElementById('file-input').click()"
+                                 @dragover.prevent="dragOver = true"
+                                 @dragleave.prevent="dragOver = false"
+                                 @drop.prevent="handleFileDrop($event)"
+                                 :class="{ 'drag-active': dragOver, 'upload-success': uploadSuccess }">
+                                <template x-if="!uploading && !uploadSuccess">
+                                    <div class="upload-content">
+                                        <div class="upload-icon"><i data-lucide="cloud-upload"></i></div>
+                                        <p class="upload-title">Sube tu Nota Simple o DNI</p>
+                                        <p class="upload-hint">Arrastra aquí o haz clic para seleccionar (PDF/Imagen)</p>
+                                    </div>
+                                </template>
+                                <template x-if="uploading">
+                                    <div class="upload-content">
+                                        <div class="upload-spinner"></div>
+                                        <p class="upload-title">Procesando con IA...</p>
+                                        <p class="upload-hint">Extrayendo datos del documento</p>
+                                    </div>
+                                </template>
+                                <template x-if="uploadSuccess">
+                                    <div class="upload-content">
+                                        <div class="upload-icon upload-icon-success"><i data-lucide="check-circle"></i></div>
+                                        <p class="upload-title">¡Datos extraídos con éxito!</p>
+                                        <p class="upload-hint">Los campos se han rellenado automáticamente</p>
+                                    </div>
+                                </template>
+                                <input type="file" id="file-input" hidden accept=".pdf,.jpg,.jpeg,.png"
+                                       @change="handleFileUpload($event)">
+                            </div>
+                        </div>
+
+                        <!-- Formulario de vendedores -->
+                        <div class="form-section">
+                            <div class="form-section-header">
+                                <h4><i data-lucide="user-check"></i> Vendedores</h4>
+                                <button type="button" class="btn-add" @click="addVendedor()">
+                                    <i data-lucide="plus"></i> Añadir
+                                </button>
+                            </div>
+                            <template x-for="(vendedor, index) in contrato.vendedores" :key="'v-'+vendedor.id">
+                                <div class="person-block">
+                                    <div class="person-block-header">
+                                        <span class="person-label" x-text="'Vendedor ' + (index + 1)"></span>
+                                        <button type="button" class="btn-remove" x-show="contrato.vendedores.length > 1"
+                                                @click="removeVendedor(index)">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+                                        </button>
+                                    </div>
+                                    <div class="form-grid">
+                                        <div class="form-group">
+                                            <label>Nombre completo</label>
+                                            <input type="text" x-model="vendedor.nombre" placeholder="Ej: Juan Pérez García">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>DNI / NIE</label>
+                                            <input type="text" x-model="vendedor.dni" placeholder="Ej: 12345678A">
+                                        </div>
+                                        <div class="form-group form-group-full">
+                                            <label>Domicilio</label>
+                                            <input type="text" x-model="vendedor.domicilio" placeholder="Ej: Calle Mayor 15, Madrid">
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+
+                        <!-- Formulario de compradores -->
+                        <div class="form-section">
+                            <div class="form-section-header">
+                                <h4><i data-lucide="user-plus"></i> Compradores</h4>
+                                <button type="button" class="btn-add" @click="addComprador()">
+                                    <i data-lucide="plus"></i> Añadir
+                                </button>
+                            </div>
+                            <template x-for="(comprador, index) in contrato.compradores" :key="'c-'+comprador.id">
+                                <div class="person-block">
+                                    <div class="person-block-header">
+                                        <span class="person-label" x-text="'Comprador ' + (index + 1)"></span>
+                                        <button type="button" class="btn-remove" x-show="contrato.compradores.length > 1"
+                                                @click="removeComprador(index)">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+                                        </button>
+                                    </div>
+                                    <div class="form-grid">
+                                        <div class="form-group">
+                                            <label>Nombre completo</label>
+                                            <input type="text" x-model="comprador.nombre" placeholder="Ej: María López Ruiz">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>DNI / NIE</label>
+                                            <input type="text" x-model="comprador.dni" placeholder="Ej: 87654321B">
+                                        </div>
+                                        <div class="form-group form-group-full">
+                                            <label>Domicilio</label>
+                                            <input type="text" x-model="comprador.domicilio" placeholder="Ej: Av. Diagonal 200, Barcelona">
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+
+                        <!-- Datos de la finca -->
+                        <div class="form-section">
+                            <div class="form-section-header">
+                                <h4><i data-lucide="map-pin"></i> Datos de la Finca</h4>
+                            </div>
+                            <div class="form-grid">
+                                <div class="form-group form-group-full">
+                                    <label>Dirección de la finca</label>
+                                    <input type="text" x-model="contrato.finca.direccion" placeholder="Ej: Calle Velázquez 42, 3ºB, Madrid">
+                                </div>
+                                <div class="form-group">
+                                    <label>Precio total (€)</label>
+                                    <input type="text" x-model="contrato.finca.precio" placeholder="Ej: 240.000">
+                                </div>
+                                <div class="form-group">
+                                    <label>Cantidad de arras (€)</label>
+                                    <input type="text" x-model="contrato.finca.arras" placeholder="Ej: 24.000">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Fechas -->
+                        <div class="form-section">
+                            <div class="form-section-header">
+                                <h4><i data-lucide="calendar"></i> Fechas</h4>
+                            </div>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label>Fecha de firma</label>
+                                    <input type="date" x-model="contrato.fechas.firma">
+                                </div>
+                                <div class="form-group">
+                                    <label>Fecha límite de escritura</label>
+                                    <input type="date" x-model="contrato.fechas.limite">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Campos extra: ciudad, referencia catastral, ciudad juzgados -->
+                        <div class="form-section">
+                            <div class="form-section-header">
+                                <h4><i data-lucide="map"></i> Localización y Referencia</h4>
+                            </div>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label>Ciudad del contrato</label>
+                                    <input type="text" x-model="contrato.finca.ciudad" placeholder="Ej: Madrid">
+                                </div>
+                                <div class="form-group">
+                                    <label>Ciudad juzgados</label>
+                                    <input type="text" x-model="contrato.finca.ciudad_juzgados" placeholder="Ej: Madrid">
+                                </div>
+                                <div class="form-group form-group-full">
+                                    <label>Referencia Catastral</label>
+                                    <input type="text" x-model="contrato.finca.referencia_catastral" placeholder="Ej: 9872023VH5797S0001WX">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Campos extra según tipo de contrato -->
+
+                        <!-- Arras sin cargas: Resto en escritura -->
+                        <div class="form-section" x-show="contrato.tipo === 'arras_sin_cargas'" x-transition>
+                            <div class="form-section-header">
+                                <h4><i data-lucide="coins"></i> Detalle del Precio</h4>
+                            </div>
+                            <div class="form-grid">
+                                <div class="form-group form-group-full">
+                                    <label>Resto a abonar en escritura (€)</label>
+                                    <input type="text" x-model="contrato.extra.resto_escritura" placeholder="Ej: 216.000">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Arras con cargas: Descripción de la carga -->
+                        <div class="form-section" x-show="contrato.tipo === 'arras_con_cargas'" x-transition>
+                            <div class="form-section-header">
+                                <h4><i data-lucide="alert-triangle"></i> Descripción de la Carga</h4>
+                            </div>
+                            <div class="form-grid">
+                                <div class="form-group form-group-full">
+                                    <label>Carga registral (hipoteca u otra)</label>
+                                    <input type="text" x-model="contrato.extra.descripcion_carga" placeholder="Ej: Hipoteca con la entidad Banco Santander">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Alquiler: Campos específicos -->
+                        <div class="form-section" x-show="contrato.tipo === 'alquiler'" x-transition>
+                            <div class="form-section-header">
+                                <h4><i data-lucide="key"></i> Datos del Arrendamiento</h4>
+                            </div>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label>Duración (años)</label>
+                                    <input type="number" min="1" x-model="contrato.extra.duracion_anos" placeholder="Ej: 1">
+                                </div>
+                                <div class="form-group">
+                                    <label>Fecha de entrada</label>
+                                    <input type="date" x-model="contrato.extra.fecha_entrada">
+                                </div>
+                                <div class="form-group">
+                                    <label>Renta anual (€)</label>
+                                    <input type="text" x-model="contrato.extra.renta_anual" placeholder="Ej: 9.600">
+                                </div>
+                                <div class="form-group">
+                                    <label>Renta mensual (€)</label>
+                                    <input type="text" x-model="contrato.extra.renta_mensual" placeholder="Ej: 800">
+                                </div>
+                                <div class="form-group">
+                                    <label>Fianza (€)</label>
+                                    <input type="text" x-model="contrato.extra.fianza_euros" placeholder="Ej: 800">
+                                </div>
+                                <div class="form-group">
+                                    <label>Pagador IBI y comunidad</label>
+                                    <select x-model="contrato.extra.pagador_ibi">
+                                        <option value="ARRENDADOR">Arrendador</option>
+                                        <option value="ARRENDATARIO">Arrendatario</option>
+                                    </select>
+                                </div>
+                                <div class="form-group form-group-full">
+                                    <label>IBAN arrendador</label>
+                                    <input type="text" x-model="contrato.extra.iban_arrendador" placeholder="Ej: ES12 1234 1234 1234 1234 1234">
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="form-section">
+                            <div class="form-section-header">
+                                <h4><i data-lucide="list-plus"></i> Cláusulas Adicionales</h4>
+                                <button type="button" class="btn-add" @click="addClausula()">
+                                    <i data-lucide="plus"></i> Añadir
+                                </button>
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1rem;">
+                                <template x-for="(clausula, i) in contrato.clausulas" :key="'cl-'+clausula.id">
+                                    <div style="display: flex; gap: 0.5rem; align-items: flex-start;">
+                                        <div style="flex: 1;">
+                                            <textarea x-model="clausula.texto" 
+                                                      placeholder="Escribe aquí la cláusula personalizada..." 
+                                                      class="form-textarea" 
+                                                      style="width: 100%; min-height: 80px;"></textarea>
+                                        </div>
+                                        <button type="button" @click="removeClausula(i)" class="btn-icon btn-icon-danger" style="margin-top: 0.5rem;">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+                                        </button>
+                                    </div>
+                                </template>
+                                <div x-show="contrato.clausulas.length === 0" style="text-align: center; color: var(--text-tertiary); font-style: italic; font-size: 0.85rem; padding: 1rem;">
+                                    Pulsa el botón de arriba para añadir una cláusula vacía.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ===== PANEL DERECHO: Vista previa ===== -->
+                    <div class="editor-panel editor-preview">
+                        <div class="panel-header">
+                            <h3><i data-lucide="eye"></i> Vista Previa del Contrato</h3>
+                        </div>
+                        <div class="preview-paper">
+                            <div class="paper-content" x-html="getContractPreview()">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========== PANEL DE USUARIO (DASHBOARD) ========== -->
+        <section id="dashboard-view" class="view" x-show="currentView === 'dashboard'" x-transition:enter="fade-in" x-transition:leave="fade-out">
+            <div class="dashboard-container">
+                <!-- Saludo -->
+                <div class="dashboard-greeting">
+                    <div>
+                        <h1 class="greeting-title">Hola, <span x-text="user.nombre"></span> 👋</h1>
+                        <p class="greeting-subtitle">Gestiona tus contratos de arras hoy.</p>
+                    </div>
+                </div>
+
+                <!-- Tarjetas de estadísticas -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-card-icon stat-card-icon-blue">
+                            <i data-lucide="file-text"></i>
+                        </div>
+                        <div class="stat-card-info">
+                            <span class="stat-card-label">Activos</span>
+                            <span class="stat-card-value" x-text="dashboardStats.activos">0</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card-icon stat-card-icon-orange">
+                            <i data-lucide="clock"></i>
+                        </div>
+                        <div class="stat-card-info">
+                            <span class="stat-card-label">Espera</span>
+                            <span class="stat-card-value" x-text="dashboardStats.espera">0</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card-icon stat-card-icon-green">
+                            <i data-lucide="check-circle-2"></i>
+                        </div>
+                        <div class="stat-card-info">
+                            <span class="stat-card-label">Finalizados</span>
+                            <span class="stat-card-value" x-text="dashboardStats.finalizados">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botón crear contrato -->
+                <button class="btn-primary btn-lg btn-full" @click="navigateTo('selector')">
+                    <i data-lucide="plus-circle"></i> Crear Nuevo Contrato
+                </button>
+
+                <!-- Alerta de vencimiento -->
+                <div class="alert-banner" x-show="alerts.length > 0" x-transition>
+                    <template x-for="(alert, i) in alerts" :key="i">
+                        <div class="alert-item" :class="'alert-' + alert.type">
+                            <div class="alert-content">
+                                <i data-lucide="info"></i>
+                                <div>
+                                    <p class="alert-title" x-text="alert.title"></p>
+                                    <p class="alert-text" x-text="alert.message"></p>
+                                </div>
+                            </div>
+                            <button class="alert-close" @click="dismissAlert(i)">
+                                <i data-lucide="x"></i>
+                            </button>
+                        </div>
+                    </template>
+                </div>
+
+                <!-- Lista de contratos recientes -->
+                <div class="contracts-section">
+                    <div class="contracts-header">
+                        <h2 class="contracts-title">Contratos recientes</h2>
+                        <a href="#" class="contracts-link" @click.prevent>Ver todos</a>
+                    </div>
+
+                    <div class="contracts-list">
+                        <template x-for="(c, i) in recentContracts" :key="i">
+                            <div class="contract-card" @click="openContract(c)">
+                                <div class="contract-card-left">
+                                    <div class="contract-card-icon" :class="c.iconClass">
+                                        <i :data-lucide="c.icon"></i>
+                                    </div>
+                                    <div class="contract-card-info">
+                                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                            <p class="contract-card-address" x-text="c.titulo" style="font-size: 1rem; font-weight: bold; margin:0;"></p>
+                                            <button @click.stop="renameContract(c)" style="background:none; border:none; cursor:pointer; color: var(--text-tertiary); padding: 0.2rem;" title="Renombrar contrato">
+                                                <i data-lucide="edit-2" style="width: 14px; height: 14px;"></i>
+                                            </button>
+                                        </div>
+                                        <p class="contract-card-meta" style="margin-top:0.25rem;">
+                                            <span x-text="c.direccion"></span> • <span x-text="c.fecha"></span>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="contract-card-right">
+                                    <span class="contract-status" :class="'status-' + c.estado" x-text="c.estadoLabel"></span>
+                                    <span class="contract-price" x-text="c.precio"></span>
+                                </div>
+                            </div>
+                        </template>
+
+                        <!-- Empty state -->
+                        <div class="empty-state" x-show="recentContracts.length === 0">
+                            <div class="empty-icon"><i data-lucide="inbox"></i></div>
+                            <h3>Aún no tienes contratos</h3>
+                            <p>Crea tu primer contrato para verlo aquí.</p>
+                            <button class="btn-primary" @click="navigateTo('selector')">
+                                <i data-lucide="plus"></i> Crear Contrato
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ============================================ -->
+    <!--            MODAL DE AUTENTICACIÓN            -->
+    <!-- ============================================ -->
+    <div id="auth-modal" class="modal-overlay" x-show="showAuthModal" x-transition:enter="modal-enter" x-transition:leave="modal-leave" @click.self="showAuthModal = false">
+        <div class="auth-card modal-content" @click.stop>
+            <!-- Botón cerrar -->
+            <button class="close-modal" @click="showAuthModal = false"><i data-lucide="x"></i></button>
+
+            <!-- Encabezado dinámico según el modo -->
+            <div class="auth-header">
+                <div class="auth-logo">
+                    <div class="logo-icon"><i data-lucide="file-text"></i></div>
+                </div>
+                <template x-if="authMode === 'login'">
+                    <div>
+                        <h2>Bienvenido de nuevo</h2>
+                        <p>Inicia sesión para acceder a tus contratos.</p>
+                    </div>
+                </template>
+                <template x-if="authMode === 'signup'">
+                    <div>
+                        <h2>¡Casi listo!</h2>
+                        <p>Regístrate para descargar y guardar tu contrato.</p>
+                    </div>
+                </template>
+                <template x-if="authMode === 'forgot'">
+                    <div>
+                        <h2>Recuperar contraseña</h2>
+                        <p>Te enviaremos un enlace a tu email para restablecerla.</p>
+                    </div>
+                </template>
+                <template x-if="authMode === 'reset'">
+                    <div>
+                        <h2>Nueva contraseña</h2>
+                        <p>Introduce tu nueva contraseña para restablecer el acceso.</p>
+                    </div>
+                </template>
+            </div>
+
+            <!-- Tabs Login / Registro (ocultos en modo forgot/reset) -->
+            <div class="tabs" x-show="authMode === 'login' || authMode === 'signup'">
+                <button class="tab-btn" :class="{ 'active': authMode === 'login' }"
+                        @click="authMode = 'login'; authError = ''">Iniciar Sesión</button>
+                <button class="tab-btn" :class="{ 'active': authMode === 'signup' }"
+                        @click="authMode = 'signup'; authError = ''">Registrarse</button>
+            </div>
+
+            <!-- Formulario LOGIN -->
+            <form class="auth-form" x-show="authMode === 'login'" @submit.prevent="handleLogin()" x-transition>
+                <div class="input-group">
+                    <label>EMAIL</label>
+                    <div class="input-wrapper">
+                        <i data-lucide="mail"></i>
+                        <input type="email" placeholder="tu@email.com" x-model="loginData.email" required>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>CONTRASEÑA</label>
+                    <div class="input-wrapper">
+                        <i data-lucide="lock"></i>
+                        <input type="password" placeholder="••••••••" x-model="loginData.password" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn-primary btn-auth" :disabled="authLoading">
+                    <span x-show="!authLoading">Entrar</span>
+                    <span x-show="authLoading" class="btn-loading">Cargando...</span>
+                </button>
+                <!-- Enlace olvidé contraseña: SOLO SI HAY ERROR -->
+                <p style="text-align: center; margin-top: 0.5rem;" x-show="authError" x-transition>
+                    <a href="#" @click.prevent="authMode = 'forgot'; authError = ''" style="color: var(--primary); font-size: 0.85rem; text-decoration: none; font-weight: 500;">¿Olvidaste tu contraseña?</a>
+                </p>
+            </form>
+
+            <!-- Formulario REGISTRO -->
+            <form class="auth-form" x-show="authMode === 'signup'" @submit.prevent="handleSignup()" x-transition>
+                <div class="input-group">
+                    <label>NOMBRE COMPLETO</label>
+                    <div class="input-wrapper">
+                        <i data-lucide="user"></i>
+                        <input type="text" placeholder="Tu nombre" x-model="signupData.nombre" required>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>EMAIL</label>
+                    <div class="input-wrapper">
+                        <i data-lucide="mail"></i>
+                        <input type="email" placeholder="tu@email.com" x-model="signupData.email" required>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>CONTRASEÑA</label>
+                    <div class="input-wrapper">
+                        <i data-lucide="lock"></i>
+                        <input type="password" placeholder="••••••••" x-model="signupData.password" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn-primary btn-auth" :disabled="authLoading">
+                    <span x-show="!authLoading">Crear Cuenta</span>
+                    <span x-show="authLoading" class="btn-loading">Cargando...</span>
+                </button>
+            </form>
+
+            <!-- Formulario FORGOT PASSWORD -->
+            <form class="auth-form" x-show="authMode === 'forgot'" @submit.prevent="handleForgotPassword()" x-transition>
+                <div class="input-group">
+                    <label>EMAIL DE TU CUENTA</label>
+                    <div class="input-wrapper">
+                        <i data-lucide="mail"></i>
+                        <input type="email" placeholder="tu@email.com" x-model="forgotEmail" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn-primary btn-auth" :disabled="authLoading">
+                    <span x-show="!authLoading">Enviar enlace</span>
+                    <span x-show="authLoading" class="btn-loading">Enviando...</span>
+                </button>
+                <p style="text-align: center; margin-top: 0.5rem;">
+                    <a href="#" @click.prevent="authMode = 'login'; authError = ''" style="color: var(--text-tertiary); font-size: 0.85rem; text-decoration: none;">← Volver al inicio de sesión</a>
+                </p>
+            </form>
+
+            <!-- Formulario RESET PASSWORD (con token) -->
+            <form class="auth-form" x-show="authMode === 'reset'" @submit.prevent="handleResetPassword()" x-transition>
+                <div class="input-group">
+                    <label>NUEVA CONTRASEÑA</label>
+                    <div class="input-wrapper">
+                        <i data-lucide="lock"></i>
+                        <input type="password" placeholder="••••••••" x-model="resetData.nueva_password" required>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>CONFIRMAR CONTRASEÑA</label>
+                    <div class="input-wrapper">
+                        <i data-lucide="shield-check"></i>
+                        <input type="password" placeholder="••••••••" x-model="resetData.confirmar_password" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn-primary btn-auth" :disabled="authLoading">
+                    <span x-show="!authLoading">Restablecer contraseña</span>
+                    <span x-show="authLoading" class="btn-loading">Restableciendo...</span>
+                </button>
+            </form>
+
+            <!-- Separador (solo en login/signup) -->
+            <div class="divider" x-show="authMode === 'login' || authMode === 'signup'"><span>o continúa con</span></div>
+
+            <!-- Botones reales de Google GSI -->
+            <div class="google-signin-wrapper" x-show="authMode === 'login' || authMode === 'signup'">
+                <div id="g_id_signin"></div>
+            </div>
+
+            <!-- Mensaje de éxito (para forgot password) -->
+            <p class="auth-success" x-show="authSuccess" x-text="authSuccess" x-transition></p>
+
+            <!-- Error message -->
+            <p class="auth-error" x-show="authError" x-text="authError" x-transition></p>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!--                  TOAST/SNACKBAR              -->
+    <!-- ============================================ -->
+    <div class="toast-container" x-show="toast.show" x-transition>
+        <div class="toast" :class="'toast-' + toast.type">
+            <i :data-lucide="toast.icon"></i>
+            <span x-text="toast.message"></span>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!--                    FOOTER                    -->
+    <!-- ============================================ -->
+    <footer class="main-footer" x-show="currentView === 'landing'">
+        <div class="footer-content">
+            <div class="footer-left">
+                <div class="logo">
+                    <div class="logo-icon logo-icon-sm"><i data-lucide="file-text"></i></div>
+                    <span class="logo-text">ArrasPro</span>
+                </div>
+                <p class="footer-desc">La herramienta definitiva para la generación de contratos inmobiliarios profesionales.</p>
+            </div>
+            <div class="footer-center">
+                <h4>Producto</h4>
+                <a href="#">Características</a>
+                <a href="#">Precios</a>
+                <a href="#">Demo</a>
+            </div>
+            <div class="footer-right-col">
+                <h4>Legal</h4>
+                <a href="#">Privacidad</a>
+                <a href="#">Términos</a>
+                <a href="#">Contacto</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2026 ArrasPro. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Inicializar iconos de forma segura
+        function refreshIcons() {
+            if (window.lucide) {
+                lucide.createIcons();
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', refreshIcons);
+        document.addEventListener('alpine:initialized', refreshIcons);
+
+        // Vigilante de cambios (con protección contra bucle infinito)
+        let timeout;
+        const observer = new MutationObserver(() => {
+            clearTimeout(timeout);
+            timeout = setTimeout(refreshIcons, 100); // Esperar 100ms tras el último cambio
+        });
+        observer.observe(document.body, { childList: true, subtree: true });
+    </script>
+</body>
+
+</html>

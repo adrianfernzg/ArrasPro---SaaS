@@ -1,0 +1,64 @@
+/* ===================================================
+   FOOTER.CSS - Pie de página
+   =================================================== */
+
+.main-footer {
+    background: var(--bg-secondary);
+    border-top: 1px solid var(--border-color);
+    padding: 0;
+}
+
+.footer-content {
+    max-width: var(--max-width-xl);
+    margin: 0 auto;
+    padding: 3rem 2rem;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 3rem;
+}
+
+.footer-left .logo {
+    margin-bottom: 0.75rem;
+}
+
+.footer-desc {
+    font-size: var(--font-size-sm);
+    color: var(--text-tertiary);
+    line-height: 1.6;
+    max-width: 300px;
+}
+
+.footer-center h4,
+.footer-right-col h4 {
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.footer-center a,
+.footer-right-col a {
+    display: block;
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    margin-bottom: 0.6rem;
+    transition: color var(--transition-fast);
+}
+
+.footer-center a:hover,
+.footer-right-col a:hover {
+    color: var(--primary);
+}
+
+.footer-bottom {
+    border-top: 1px solid var(--border-color);
+    text-align: center;
+    padding: 1.5rem 2rem;
+}
+
+.footer-bottom p {
+    font-size: var(--font-size-xs);
+    color: var(--text-tertiary);
+}

@@ -1,0 +1,174 @@
+/* ===================================================
+   LANDING.CSS - Página de inicio / Hero
+   =================================================== */
+
+.hero-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 5rem 2rem 4rem;
+    max-width: var(--max-width-xl);
+    margin: 0 auto;
+}
+
+/* --- Badge superior --- */
+.hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--primary-lighter);
+    color: var(--primary);
+    padding: 0.5rem 1.2rem;
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    margin-bottom: 2rem;
+    animation: fadeIn 0.6s ease;
+}
+
+.hero-badge i {
+    width: 16px;
+    height: 16px;
+}
+
+/* --- Título principal --- */
+.hero-title {
+    font-size: clamp(2.5rem, 5vw, var(--font-size-5xl));
+    font-weight: 900;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    color: var(--text-primary);
+    margin-bottom: 1.5rem;
+    animation: fadeIn 0.6s ease 0.1s both;
+}
+
+/* --- Subtítulo --- */
+.hero-subtitle {
+    font-size: var(--font-size-lg);
+    color: var(--text-secondary);
+    line-height: 1.7;
+    max-width: 600px;
+    margin-bottom: 2.5rem;
+    animation: fadeIn 0.6s ease 0.2s both;
+}
+
+/* --- Botones del hero --- */
+.hero-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 4rem;
+    animation: fadeIn 0.6s ease 0.3s both;
+}
+
+/* --- Estadísticas --- */
+.hero-stats {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    padding: 1.5rem 3rem;
+    background: var(--bg-secondary);
+    border-radius: var(--radius-2xl);
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--border-light);
+    animation: fadeIn 0.6s ease 0.4s both;
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-number {
+    display: block;
+    font-size: var(--font-size-2xl);
+    font-weight: 800;
+    color: var(--text-primary);
+    letter-spacing: -0.02em;
+}
+
+.stat-label {
+    display: block;
+    font-size: var(--font-size-xs);
+    color: var(--text-tertiary);
+    font-weight: 500;
+    margin-top: 2px;
+}
+
+.stat-divider {
+    width: 1px;
+    height: 40px;
+    background: var(--border-color);
+}
+
+/* --- Sección de características --- */
+.features-section {
+    padding: 4rem 2rem 6rem;
+    max-width: var(--max-width-xl);
+    margin: 0 auto;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+}
+
+.feature-card {
+    background: var(--bg-secondary);
+    padding: 2rem;
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--border-light);
+    box-shadow: var(--shadow-sm);
+    transition: all var(--transition-base);
+    text-align: left;
+}
+
+.feature-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--border-color);
+}
+
+.feature-card h3 {
+    font-size: var(--font-size-lg);
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+}
+
+.feature-card p {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+.feature-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.2rem;
+}
+
+.feature-icon i {
+    width: 24px;
+    height: 24px;
+}
+
+.feature-icon-blue {
+    background: var(--primary-light);
+    color: var(--primary);
+}
+
+.feature-icon-green {
+    background: var(--success-light);
+    color: var(--success);
+}
+
+.feature-icon-purple {
+    background: #ede9fe;
+    color: #7c3aed;
+}
