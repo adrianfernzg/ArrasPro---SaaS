@@ -1,34 +1,9 @@
-# ============================================================
-# Dockerfile - ArrasPro API
-# ============================================================
-# Imagen base: Python 3.12 slim-bookworm (forzar rebuild)
-FROM python:3.12-slim-bookworm
-
-# Evitar prompts interactivos de apt
+FROM python:3.12-slim
 ENV DEBIAN_FRONTEND=noninteractive
-
-# Instalar dependencias del sistema necesarias para psycopg2
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    libpq-dev \
-    gcc \
-    && rm -rf /var/lib/apt/lists/*
-
-# Directorio de trabajo dentro del contenedor
+RUN apt-get update && apt-get install -y libpq-dev gcc && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
-
-# Copiar requirements primero (para aprovechar el caché de capas de Docker)
 COPY requirements.txt .
-
-# Instalar dependencias de Python
-RUN pip install --no-cache-dir --upgrade pip \
-    && pip install --no-cache-dir -r requirements.txt
-
-# Copiar el resto del proyecto
+RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
-
-# Exponer el puerto de la API
 EXPOSE 8000
-
-# Comando de inicio: Railway inyecta la variable $PORT. 
-# Si no existe, usamos 8000 por defecto.
-CMD uvicorn controlador.api.main:app --host 0.0.0.0 --port ${PORT:-8000} --workers 1
+CMD uvicorn controlador.api.main:app --host 0.0.0.0 --port ${PORT:-8000}

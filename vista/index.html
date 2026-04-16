@@ -710,13 +710,15 @@
     <!-- ============================================ -->
     <!--            MODAL DE AUTENTICACIÓN            -->
     <!-- ============================================ -->
-    <div id="auth-modal" class="modal-overlay" x-show="showAuthModal" x-transition:enter="modal-enter"
-        x-transition:leave="modal-leave" @click.self="showAuthModal = false">
+    <div id="auth-modal" class="modal-overlay" x-show="showAuthModal" x-transition @click.self="showAuthModal = false">
         <div class="auth-card modal-content" @click.stop>
-            <!-- Botón cerrar -->
-            <button class="close-modal" @click="showAuthModal = false" type="button" aria-label="Cerrar">
-                <i data-lucide="x"></i>
-            </button>
+            <!-- Botón cerrar (independiente) -->
+            <div style="position: absolute; top: 1rem; right: 1rem; z-index: 100;">
+                <button type="button" @click="showAuthModal = false" 
+                        style="background: #f3f4f6; border: none; border-radius: 50%; width: 32px; height: 32px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #6b7280; transition: all 0.2s;">
+                    <i data-lucide="x" style="width: 20px; height: 20px;"></i>
+                </button>
+            </div>
 
             <!-- Encabezado dinámico según el modo -->
             <div class="auth-header">
