@@ -11,6 +11,7 @@ Para ejecutar (desde la raíz del proyecto):
 """
 
 import os
+print("🔥 [ArrasPro] VERSION DEPLOY: 1.0.4 - Limpieza y corrección de modal")
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles

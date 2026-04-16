@@ -29,5 +29,6 @@ COPY . .
 # Exponer el puerto de la API
 EXPOSE 8000
 
-# Comando de inicio compatible con plataformas que inyectan PORT (ej. Railway)
-CMD ["sh", "-c", "uvicorn controlador.api.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
+# Comando de inicio: Railway inyecta la variable $PORT. 
+# Si no existe, usamos 8000 por defecto.
+CMD uvicorn controlador.api.main:app --host 0.0.0.0 --port ${PORT:-8000} --workers 1
