@@ -1,8 +1,8 @@
 # ============================================================
 # Dockerfile - ArrasPro API
 # ============================================================
-# Imagen base: Python 3.12 slim (ligera)
-FROM python:3.12-slim
+# Imagen base: Python 3.12 slim-bookworm (forzar rebuild)
+FROM python:3.12-slim-bookworm
 
 # Evitar prompts interactivos de apt
 ENV DEBIAN_FRONTEND=noninteractive

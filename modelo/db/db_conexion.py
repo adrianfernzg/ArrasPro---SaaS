@@ -4,6 +4,7 @@ Admite `.env` local, Docker y variables inyectadas por Railway.
 """
 
 import os
+print("\n" + "="*50 + "\n🔥 ARRASPRO DESPLEGADO CORRECTAMENTE v1.0.5 🔥\n" + "="*50 + "\n")
 from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
