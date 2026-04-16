@@ -29,6 +29,9 @@ async def login(data: LoginSchema, db: Session = Depends(obtener_sesion)):
         return usuario
     except ValueError as e:
         raise HTTPException(status_code=401, detail=str(e))
+    except Exception as e:
+        print(f"❌ Error en /auth/login: {type(e).__name__}: {e}")
+        raise HTTPException(status_code=500, detail=f"Error del servidor: {type(e).__name__}: {str(e)}")
 
 
 @router.post("/register", response_model=UsuarioResponse)
@@ -47,6 +50,9 @@ async def register(
         return usuario
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        print(f"❌ Error en /auth/register: {type(e).__name__}: {e}")
+        raise HTTPException(status_code=500, detail=f"Error del servidor: {type(e).__name__}: {str(e)}")
 
 @router.post("/google", response_model=UsuarioResponse)
 async def google_auth(

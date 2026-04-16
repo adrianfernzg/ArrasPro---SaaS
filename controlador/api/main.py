@@ -27,13 +27,63 @@ from fastapi.responses import JSONResponse
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 VISTA_DIR = os.path.join(BASE_DIR, "vista")
 
+
+def _obtener_allowed_origins() -> list[str]:
+    """
+    Permite configurar CORS por variable de entorno y añade orígenes comunes
+    de desarrollo si no se define nada.
+    """
+    cors_env = os.getenv("CORS_ALLOW_ORIGINS", "").strip()
+    if cors_env:
+        return [origin.strip() for origin in cors_env.split(",") if origin.strip()]
+
+    origins = {
+        "http://localhost:8000",
+        "http://127.0.0.1:8000",
+        "http://localhost:8080",
+        "http://127.0.0.1:8080",
+        "http://localhost:5500",
+        "http://127.0.0.1:5500",
+    }
+
+    app_base_url = os.getenv("APP_BASE_URL", "").strip()
+    railway_static_url = os.getenv("RAILWAY_STATIC_URL", "").strip()
+    railway_public_domain = os.getenv("RAILWAY_PUBLIC_DOMAIN", "").strip()
+
+    if app_base_url:
+        origins.add(app_base_url.rstrip("/"))
+    if railway_static_url:
+        origins.add(railway_static_url.rstrip("/"))
+    if railway_public_domain:
+        origins.add(f"https://{railway_public_domain}".rstrip("/"))
+
+    return sorted(origins)
+
+# ========================
+# STARTUP: Crear tablas automáticamente
+# ========================
+from contextlib import asynccontextmanager
+from modelo.db.db_conexion import engine, Base
+from modelo.db import models  # Importar para registrar los modelos en Base
+
+@asynccontextmanager
+async def lifespan(app):
+    """Crea las tablas en la BD al arrancar si no existen."""
+    try:
+        Base.metadata.create_all(bind=engine)
+        print("✅ Tablas de la BD listas.")
+    except Exception as e:
+        print(f"⚠️  No se pudieron crear las tablas: {e}")
+    yield
+
 # ========================
 # CREAR LA INSTANCIA
 # ========================
 app = FastAPI(
     title="ArrasPro API",
     description="API para la generación de contratos inmobiliarios con IA",
-    version="1.0.0"
+    version="1.0.0",
+    lifespan=lifespan
 )
 
 # ========================
@@ -42,7 +92,7 @@ app = FastAPI(
 # Permite que el frontend (HTML estático abierto con file://) se comunique con la API
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # En producción, restringir al dominio real
+    allow_origins=_obtener_allowed_origins(),
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -88,6 +138,33 @@ def api_status():
         "version": "1.0.0",
         "status": "✅ Funcionando correctamente"
     }
+
+
+@app.get("/api/db-status", tags=["General"])
+def db_status():
+    """Endpoint de diagnóstico: verifica la conexión con la base de datos."""
+    from sqlalchemy import text
+    from modelo.db.db_conexion import engine, DATABASE_URL
+    import re
+
+    # Ocultar la contraseña de la URL para no exponerla
+    url_segura = re.sub(r'://([^:]+):([^@]+)@', r'://\1:***@', DATABASE_URL)
+
+    try:
+        with engine.connect() as conn:
+            result = conn.execute(text("SELECT version()"))
+            version = result.scalar()
+        return {
+            "status": "✅ Conectado",
+            "db_url": url_segura,
+            "postgres_version": version
+        }
+    except Exception as e:
+        return {
+            "status": "❌ Error de conexión",
+            "db_url": url_segura,
+            "error": str(e)
+        }
 
 
 # ========================
