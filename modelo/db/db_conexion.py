@@ -15,6 +15,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__fil
 # Intentar cargar .env local (solo funciona en desarrollo, en Railway las vars vienen del entorno)
 load_dotenv(os.path.join(BASE_DIR, ".env"), override=False)
 
+# Log para Railway
+print(f"DEBUG: BASE_DIR es {BASE_DIR}")
+print(f"DEBUG: DATABASE_URL detectada: {bool(os.getenv('DATABASE_URL'))}")
+
 def _normalizar_database_url(database_url: str | None) -> str | None:
     """Ajusta formatos de URL comunes para que SQLAlchemy los acepte."""
     if not database_url:

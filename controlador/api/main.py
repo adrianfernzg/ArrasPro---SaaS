@@ -69,11 +69,14 @@ from modelo.db import models  # Importar para registrar los modelos en Base
 @asynccontextmanager
 async def lifespan(app):
     """Crea las tablas en la BD al arrancar si no existen."""
+    print("🚀 Iniciando Lifespan...")
     try:
+        print("🔍 Intentando conectar y crear tablas...")
         Base.metadata.create_all(bind=engine)
         print("✅ Tablas de la BD listas.")
     except Exception as e:
         print(f"⚠️  No se pudieron crear las tablas: {e}")
+    print("✨ Lifespan completado, aplicación lista.")
     yield
 
 # ========================
