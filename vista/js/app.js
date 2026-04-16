@@ -148,9 +148,9 @@ function appState() {
                 const response = await fetch(`${API_BASE}/contratos/?user_id=${this.user.id}`);
                 if (response.ok) {
                     const rawContracts = await response.json();
-                    
+
                     let activos = 0, espera = 0, finalizados = 0;
-                    
+
                     this.recentContracts = rawContracts.map(c => {
                         const d = c.datos_json || {};
                         const fecha = new Date(c.fecha_creacion).toLocaleDateString();
@@ -159,7 +159,7 @@ function appState() {
                         const precio = d.finca && d.finca.precio ? '€' + d.finca.precio : '€0';
                         const titulo = d.titulo || `Contrato #${c.id}`;
                         const isAlquiler = d.tipo && d.tipo.includes('alquiler');
-                        
+
                         if (c.estado === 'activo') activos++;
                         else if (c.estado === 'vencido') finalizados++;
                         else espera++;
@@ -176,7 +176,7 @@ function appState() {
                             iconClass: isAlquiler ? 'icon-building' : 'icon-home'
                         };
                     });
-                    
+
                     this.dashboardStats = { activos, espera, finalizados };
                     this.$nextTick(() => lucide.createIcons());
                 }
@@ -199,14 +199,14 @@ function appState() {
                 // Actualizar localmente primero
                 const updatedData = { ...contract.datos_json };
                 updatedData.titulo = newTitle.trim();
-                
+
                 try {
                     const response = await fetch(`${API_BASE}/contratos/${contract.id}?user_id=${this.user.id}`, {
                         method: 'PUT',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(updatedData)
                     });
-                    
+
                     if (response.ok) {
                         this.showToast('Contrato renombrado', 'success', 'check');
                         this.fetchUserContracts();
@@ -278,7 +278,7 @@ function appState() {
             this.authMode = mode;
             this.showAuthModal = true;
             this.authError = '';
-            
+
             // Inicializar el botón oficial de Google cada vez que se abre el modal
             this.$nextTick(() => {
                 lucide.createIcons();
@@ -291,15 +291,17 @@ function appState() {
             if (typeof google !== 'undefined') {
                 google.accounts.id.initialize({
                     client_id: "641197400675-ga0jsgi5ivl5qntr2824lbpuuvqlt1o3.apps.googleusercontent.com",
-                    callback: (response) => this.handleGoogleCredentialResponse(response)
+                    callback: (response) => this.handleGoogleCredentialResponse(response),
+                    auto_select: false,
+                    cancel_on_tap_outside: true
                 });
-                
+
                 // Renderizar botón centrado y con ancho completo del contenedor (si es posible)
                 google.accounts.id.renderButton(
                     document.getElementById("g_id_signin"),
-                    { 
-                        theme: "outline", 
-                        size: "large", 
+                    {
+                        theme: "outline",
+                        size: "large",
                         width: "100%", // Intentamos ancho completo del div contenedor
                         text: "continue_with",
                         shape: "pill"
@@ -317,7 +319,7 @@ function appState() {
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ credential: response.credential })
                 });
-                
+
                 if (res.ok) {
                     const data = await res.json();
                     this.setUserSession(data);
@@ -360,7 +362,7 @@ function appState() {
         async handleSignup() {
             this.authError = '';
             const p = this.signupData.password;
-            
+
             // Validación frontend rápida
             const hasUpper = /[A-Z]/.test(p);
             const hasLower = /[a-z]/.test(p);
@@ -526,32 +528,32 @@ function appState() {
             const tipo = c.tipo;
 
             // Helper: formatear fecha DD/MM/AAAA
-            const fmt = (d) => { if (!d) return '___/___/______'; const [y,m,day] = d.split('-'); return `${day}/${m}/${y}`; };
+            const fmt = (d) => { if (!d) return '___/___/______'; const [y, m, day] = d.split('-'); return `${day}/${m}/${y}`; };
             const blank = (v, placeholder) => v || placeholder;
 
             // --- Bloque de personas ---
             const bloqueVendedores = (c.vendedores || []).map((v, i) => {
                 const nombre = blank(v.nombre, '____________________');
-                const dni    = blank(v.dni,    '___________');
-                const dom    = blank(v.domicilio, '____________________________');
+                const dni = blank(v.dni, '___________');
+                const dom = blank(v.domicilio, '____________________________');
                 return `<p class="paper-text">D./Dña. <strong>${nombre}</strong>, con DNI/NIE <strong>${dni}</strong>, con domicilio en <strong>${dom}</strong>.</p>`;
             }).join('');
 
             const bloqueCompradores = (c.compradores || []).map((v, i) => {
                 const nombre = blank(v.nombre, '____________________');
-                const dni    = blank(v.dni,    '___________');
-                const dom    = blank(v.domicilio, '____________________________');
+                const dni = blank(v.dni, '___________');
+                const dom = blank(v.domicilio, '____________________________');
                 return `<p class="paper-text">D./Dña. <strong>${nombre}</strong>, con DNI/NIE <strong>${dni}</strong>, con domicilio en <strong>${dom}</strong>.</p>`;
             }).join('');
 
-            const ciudad    = blank(c.finca.ciudad, 'Madrid');
+            const ciudad = blank(c.finca.ciudad, 'Madrid');
             const fechaFirma = fmt(c.fechas.firma);
             const fechaLimite = fmt(c.fechas.limite);
-            const direccion  = blank(c.finca.direccion, '________________________________');
+            const direccion = blank(c.finca.direccion, '________________________________');
             const refCatastral = blank(c.finca.referencia_catastral, '________________');
             const ciudadJuzgados = blank(c.finca.ciudad_juzgados, ciudad);
-            const precio     = blank(c.finca.precio, '________');
-            const arras      = blank(c.finca.arras,  '________');
+            const precio = blank(c.finca.precio, '________');
+            const arras = blank(c.finca.arras, '________');
 
             // Cláusulas adicionales
             const numNames = ['PRIMERA', 'SEGUNDA', 'TERCERA', 'CUARTA', 'QUINTA', 'SEXTA', 'SÉPTIMA', 'OCTAVA', 'NOVENA', 'DÉCIMA'];
@@ -628,12 +630,12 @@ function appState() {
 
             } else if (tipo === 'alquiler') {
                 const ex = c.extra || {};
-                const duracion   = blank(ex.duracion_anos, '__');
-                const fEntrada   = ex.fecha_entrada ? fmt(ex.fecha_entrada) : '___/___/______';
+                const duracion = blank(ex.duracion_anos, '__');
+                const fEntrada = ex.fecha_entrada ? fmt(ex.fecha_entrada) : '___/___/______';
                 const rentaAnual = blank(ex.renta_anual, '________');
-                const rentaMens  = blank(ex.renta_mensual, '________');
-                const iban       = blank(ex.iban_arrendador, 'ES__ ____ ____ ____ ____ ____');
-                const fianza     = blank(ex.fianza_euros, '________');
+                const rentaMens = blank(ex.renta_mensual, '________');
+                const iban = blank(ex.iban_arrendador, 'ES__ ____ ____ ____ ____ ____');
+                const fianza = blank(ex.fianza_euros, '________');
                 const pagadorIBI = blank(ex.pagador_ibi, 'ARRENDADOR');
 
                 const clausulasBase = [
@@ -692,12 +694,12 @@ function appState() {
         removeComprador(index) {
             this.contrato.compradores.splice(index, 1);
         },
-        
+
         // --- Gestión de cláusulas extra ---
         addClausula() {
             this.contrato.clausulas.push({ id: Math.random().toString(36).substr(2, 9), texto: "" });
         },
-        
+
         removeClausula(index) {
             this.contrato.clausulas.splice(index, 1);
         },
@@ -744,7 +746,7 @@ function appState() {
                         if (datos.DOMICILIO_VENDEDOR) this.contrato.vendedores[0].domicilio = datos.DOMICILIO_VENDEDOR;
                         if (datos.DIRECCION_FINCA) this.contrato.finca.direccion = datos.DIRECCION_FINCA;
                         if (datos.CUOTA_PARTICIPACION) {
-                             this.showToast('Nota Simple detectada con éxito', 'success', 'sparkles');
+                            this.showToast('Nota Simple detectada con éxito', 'success', 'sparkles');
                         }
                     }
 
@@ -811,7 +813,7 @@ function appState() {
             }
 
             if (!isComplete) {
-                if(!window.confirm("Faltan cosas importantes por rellenar. ¿Estás seguro que quieres descargar?")) {
+                if (!window.confirm("Faltan cosas importantes por rellenar. ¿Estás seguro que quieres descargar?")) {
                     return;
                 }
             }
@@ -846,12 +848,12 @@ function appState() {
                     try {
                         let endpoint = `${API_BASE}/contratos/?user_id=${this.user.id}`;
                         let method = 'POST';
-                        
+
                         if (this.currentContractId) {
                             endpoint = `${API_BASE}/contratos/${this.currentContractId}?user_id=${this.user.id}`;
                             method = 'PUT';
                         }
-                        
+
                         await fetch(endpoint, {
                             method: method,
                             headers: { 'Content-Type': 'application/json' },

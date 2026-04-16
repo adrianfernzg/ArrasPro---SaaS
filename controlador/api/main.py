@@ -130,23 +130,6 @@ def serve_frontend():
     return FileResponse(os.path.join(VISTA_DIR, "index.html"))
 
 
-@app.get("/api/env-debug", tags=["General"])
-def env_debug():
-    """Diagnóstico: muestra variables de entorno relacionadas con BD (sin exponer contraseñas)."""
-    import os
-    db_vars = {}
-    for k, v in os.environ.items():
-        if any(x in k.upper() for x in ["DATABASE", "PG", "POSTGRES", "DB_"]):
-            # Mostrar solo los primeros 15 chars del valor para no exponer credenciales
-            db_vars[k] = v[:15] + "..." if len(v) > 15 else v
-    return {
-        "total_env_vars": len(os.environ),
-        "db_related_vars": db_vars,
-        "DATABASE_URL_set": bool(os.getenv("DATABASE_URL")),
-        "PGHOST": os.getenv("PGHOST", "NOT SET"),
-    }
-
-
 @app.get("/api/status", tags=["General"])
 def api_status():
     """Endpoint para verificar que la API está funcionando."""
@@ -155,33 +138,6 @@ def api_status():
         "version": "1.0.0",
         "status": "✅ Funcionando correctamente"
     }
-
-
-@app.get("/api/db-status", tags=["General"])
-def db_status():
-    """Endpoint de diagnóstico: verifica la conexión con la base de datos."""
-    from sqlalchemy import text
-    from modelo.db.db_conexion import engine, DATABASE_URL
-    import re
-
-    # Ocultar la contraseña de la URL para no exponerla
-    url_segura = re.sub(r'://([^:]+):([^@]+)@', r'://\1:***@', DATABASE_URL)
-
-    try:
-        with engine.connect() as conn:
-            result = conn.execute(text("SELECT version()"))
-            version = result.scalar()
-        return {
-            "status": "✅ Conectado",
-            "db_url": url_segura,
-            "postgres_version": version
-        }
-    except Exception as e:
-        return {
-            "status": "❌ Error de conexión",
-            "db_url": url_segura,
-            "error": str(e)
-        }
 
 
 # ========================

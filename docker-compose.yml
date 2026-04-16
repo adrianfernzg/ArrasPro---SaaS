@@ -19,11 +19,10 @@ services:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASS}
       POSTGRES_DB: ${DB_NAME}
-    # Puerto NO expuesto al host para evitar conflicto con PostgreSQL local.
-    # La API accede a la BD directamente por la red interna de Docker.
-    # Descomenta la línea siguiente si necesitas acceder desde un cliente externo (ej: DBeaver):
-    # ports:
-    #   - "5434:5432"
+    # Exponemos la BD en un puerto configurable del host para evitar choques
+    # con un PostgreSQL local ya arrancado.
+    ports:
+      - "${HOST_DB_PORT:-5434}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:

@@ -714,7 +714,9 @@
         x-transition:leave="modal-leave" @click.self="showAuthModal = false">
         <div class="auth-card modal-content" @click.stop>
             <!-- Botón cerrar -->
-            <button class="close-modal" @click="showAuthModal = false"><i data-lucide="x"></i></button>
+            <button class="close-modal" @click="showAuthModal = false" type="button" aria-label="Cerrar">
+                <i data-lucide="x"></i>
+            </button>
 
             <!-- Encabezado dinámico según el modo -->
             <div class="auth-header">
@@ -869,8 +871,8 @@
 
             <!-- Error message -->
             <p class="auth-error" x-show="authError" x-text="authError" x-transition></p>
-        </div>
-    </div>
+        </div><!-- end auth-card -->
+    </div><!-- end modal-overlay -->
 
     <!-- ============================================ -->
     <!--                  TOAST/SNACKBAR              -->

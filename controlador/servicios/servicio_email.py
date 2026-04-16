@@ -1,15 +1,13 @@
 """
 servicio_email.py - Servicio para el envío de correos electrónicos.
-Permite enviar correos de bienvenida con plantillas HTML.
-Configuración mediante variables de entorno (.env).
+Permite enviar correos de bienvenida y recuperación usando la URL pública
+correcta según el entorno.
 """
 
 import os
 import smtplib
-from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-from dotenv import load_dotenv
-
+from email.mime.text import MIMEText
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -20,6 +18,25 @@ SMTP_PORT = int(os.getenv("SMTP_PORT", "587"))
 SMTP_USER = os.getenv("SMTP_USER", "")
 # IMPORTANTE: Quitar espacios de contraseñas de Google App (vienen como 'xxxx xxxx xxxx xxxx')
 SMTP_PASSWORD = os.getenv("SMTP_PASSWORD", "").strip().replace(" ", "")
+
+def _obtener_app_base_url() -> str:
+    """Obtiene la URL pública de la app con soporte para Railway."""
+    app_base_url = os.getenv("APP_BASE_URL")
+    if app_base_url:
+        return app_base_url.rstrip("/")
+
+    railway_static_url = os.getenv("RAILWAY_STATIC_URL")
+    if railway_static_url:
+        return railway_static_url.rstrip("/")
+
+    railway_public_domain = os.getenv("RAILWAY_PUBLIC_DOMAIN")
+    if railway_public_domain:
+        return f"https://{railway_public_domain}".rstrip("/")
+
+    return "http://localhost:8000"
+
+
+APP_BASE_URL = _obtener_app_base_url()
 
 def enviar_bienvenida(destinatario: str, nombre_usuario: str):
     """
@@ -52,7 +69,7 @@ def enviar_bienvenida(destinatario: str, nombre_usuario: str):
                     </ul>
                 </div>
                 <p style="text-align: center; margin-top: 30px;">
-                    <a href="http://localhost:8000" style="background-color: #2563eb; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold;">Ir a mi Dashboard</a>
+                    <a href="{APP_BASE_URL}" style="background-color: #2563eb; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold;">Ir a mi Dashboard</a>
                 </p>
                 <hr style="border: 0; border-top: 1px solid #eee; margin: 30px 0;">
                 <p style="font-size: 0.8rem; color: #64748b; text-align: center;">Este es un mensaje automático de ArrasPro. No respondas a este correo.</p>
@@ -93,8 +110,8 @@ def enviar_email_restablecimiento(destinatario: str, nombre_usuario: str, token:
         msg["From"] = f"ArrasPro <{SMTP_USER}>"
         msg["To"] = destinatario
 
-        # Enlace de restablecimiento (apunta al frontend servido por FastAPI en el 8000)
-        enlace = f"http://localhost:8000/?reset_token={token}"
+        # Enlace de restablecimiento (apunta al frontend con el token como parámetro)
+        enlace = f"{APP_BASE_URL}/?reset_token={token}"
 
         html = f"""
         <html>

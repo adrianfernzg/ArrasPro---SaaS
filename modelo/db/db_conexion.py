@@ -12,13 +12,6 @@ from sqlalchemy.orm import declarative_base, sessionmaker
 # Buscamos el .env en la raíz del proyecto (2 niveles arriba de modelo/db/)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-# LOG DE DIAGNÓSTICO: mostrar env vars visibles en el arranque
-_db_url_raw = os.getenv("DATABASE_URL", "")
-print(f"🔍 [db_conexion] DATABASE_URL en os.environ: {'SÍ (' + _db_url_raw[:30] + '...)' if _db_url_raw else 'NO ENCONTRADO'}")
-print(f"🔍 [db_conexion] PGHOST: {os.getenv('PGHOST', 'NO ENCONTRADO')}")
-print(f"🔍 [db_conexion] PGDATABASE: {os.getenv('PGDATABASE', 'NO ENCONTRADO')}")
-print(f"🔍 Variables de entorno totales: {len(os.environ)}")
-
 # Intentar cargar .env local (solo funciona en desarrollo, en Railway las vars vienen del entorno)
 load_dotenv(os.path.join(BASE_DIR, ".env"), override=False)
 
