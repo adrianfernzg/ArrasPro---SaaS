@@ -17,6 +17,9 @@ Ambas partes se reconocen capacidad legal suficiente para el otorgamiento del pr
 I. Que la parte arrendadora es propietaria de la vivienda situada en:
 Dirección: **[DIRECCION_VIVIENDA]**
 Referencia Catastral: **[REFERENCIA_CATASTRAL]**
+Número de Finca Registral: **[NUMERO_FINCA]**
+Superficie construida: **[METROS_CONSTRUIDOS] m²**
+Superficie total: **[SUPERFICIE_TOTAL] m²**
 
 II. Que la parte arrendataria está interesada en el alquiler de dicha vivienda para su uso exclusivo de residencia habitual.
 
@@ -33,7 +36,7 @@ El pago se realizará mediante transferencia bancaria a la cuenta: **[IBAN_ARREN
 La parte arrendataria hace entrega en este acto de la suma de **[FIANZA_EUROS]** EUROS, equivalente a una mensualidad de renta, en concepto de fianza legal.
 
 **CUARTA. - GASTOS.**
-Los gastos de suministros (luz, agua, gas) debidamente individualizados mediante aparato contador serán de cuenta exclusiva del ARRENDATARIO. Los gastos de comunidad e IBI serán por cuenta del **[PAGADOR_IBI_COMUNIDAD]**.
+Los gastos de suministros se distribuyen conforme al acuerdo entre las partes: Luz a cargo del **[PAGADOR_LUZ]**; Agua a cargo del **[PAGADOR_AGUA]**; Gas a cargo del **[PAGADOR_GAS]**. Los gastos de comunidad e IBI serán por cuenta del **[PAGADOR_IBI_COMUNIDAD]**.
 
 **QUINTA. - DESTINO.**
 La vivienda se alquila exclusivamente para satisfacer la necesidad permanente de vivienda del arrendatario, prohibiéndose el subarriendo total o parcial.

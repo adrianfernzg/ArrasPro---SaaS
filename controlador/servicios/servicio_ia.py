@@ -30,8 +30,9 @@ GEMINI_URL = (
 
 def extraer_datos_nota_simple(ruta_archivo: str) -> dict | None:
     """
-    Lee un PDF de Nota Simple y extrae datos usando Gemini 3.
-    Devuelve un diccionario con los campos extraídos, o None si falla.
+    Lee un PDF/imagen de Nota Simple y extrae datos usando Gemini 3.
+    Solo extrae: DIRECCION_FINCA, REFERENCIA_CATASTRAL, NUMERO_FINCA.
+    Si el documento NO es una Nota Simple, devuelve {"error": "no_es_nota_simple"}.
     """
     print(f"📄 Leyendo: {os.path.basename(ruta_archivo)}...")
 
@@ -50,17 +51,27 @@ def extraer_datos_nota_simple(ruta_archivo: str) -> dict | None:
         }
         mime_type = mime_types.get(extension, "application/pdf")
 
-        # 3. Construir el payload para Gemini
+        # 3. Construir el payload para Gemini con validación estricta del tipo de documento
         payload = {
             "contents": [{
                 "parts": [
                     {
                         "text": (
-                            "Analiza esta Nota Simple española. "
-                            "Extrae y devuelve SOLO un JSON con estos campos: "
-                            "NOMBRE_VENDEDOR, DNI_VENDEDOR, DOMICILIO_VENDEDOR, "
-                            "DIRECCION_FINCA, CUOTA_PARTICIPACION. "
-                            "No escribas nada más que el objeto JSON."
+                            "Eres un validador y extractor de Notas Simples del Registro de la Propiedad español. "
+                            "Tarea: Analiza el documento adjunto.\n\n"
+                            "PASO 1 - VALIDACIÓN: Determina si el documento es una Nota Simple oficial "
+                            "(emitida por el Registro de la Propiedad). Una Nota Simple contiene típicamente: "
+                            "encabezado del Registro, número de finca registral, referencia catastral, "
+                            "descripción del inmueble, titulares, cargas, etc.\n\n"
+                            "PASO 2 - RESPUESTA:\n"
+                            "- Si el documento NO es una Nota Simple (es otra cosa: foto, factura, DNI, etc.), "
+                            "devuelve EXACTAMENTE: {\"error\": \"no_es_nota_simple\"}\n"
+                            "- Si SÍ es una Nota Simple, devuelve EXACTAMENTE un JSON con: "
+                            "DIRECCION_FINCA (dirección completa del inmueble), "
+                            "REFERENCIA_CATASTRAL (código alfanumérico catastral), "
+                            "NUMERO_FINCA (número de finca registral). "
+                            "Si algún campo no aparece, deja la cadena vacía.\n\n"
+                            "Responde SOLO con el objeto JSON, sin texto adicional, sin markdown."
                         )
                     },
                     {
@@ -133,10 +144,20 @@ def extraer_datos_dni(ruta_archivo: str) -> dict | None:
                 "parts": [
                     {
                         "text": (
-                            "Analiza este DNI español. "
-                            "Extrae y devuelve SOLO un JSON con: "
-                            "NOMBRE, DNI, DOMICILIO. "
-                            "No escribas nada más que el objeto JSON."
+                            "Eres un validador y extractor de documentos de identidad españoles "
+                            "(DNI, NIE o pasaporte). Tarea: Analiza el documento adjunto.\n\n"
+                            "PASO 1 - VALIDACIÓN: Determina si el documento es un DNI, NIE o pasaporte español oficial "
+                            "(documento de identidad con foto, nombre, número de identidad y firma).\n\n"
+                            "PASO 2 - RESPUESTA:\n"
+                            "- Si el documento NO es un DNI, NIE o pasaporte (es una foto de un perro, paisaje, "
+                            "factura, nota simple, captura de pantalla u otro documento), "
+                            "devuelve EXACTAMENTE: {\"error\": \"no_es_dni\"}\n"
+                            "- Si SÍ es un DNI/NIE/pasaporte, devuelve EXACTAMENTE un JSON con: "
+                            "NOMBRE (nombre y apellidos completos), "
+                            "DNI (número de DNI/NIE o pasaporte), "
+                            "DOMICILIO (dirección si aparece, si no cadena vacía). "
+                            "Si algún campo no aparece, deja la cadena vacía.\n\n"
+                            "Responde SOLO con el objeto JSON, sin texto adicional, sin markdown."
                         )
                     },
                     {

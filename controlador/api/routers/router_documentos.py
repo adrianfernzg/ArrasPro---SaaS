@@ -19,10 +19,9 @@ EXTENSIONES_PERMITIDAS = {".pdf", ".jpg", ".jpeg", ".png"}
 @router.post("/upload")
 async def upload_documento(file: UploadFile = File(...)):
     """
-    Recibe un documento (PDF o imagen) y extrae datos con IA (Gemini 3).
-    Detecta automáticamente si es una Nota Simple o un DNI.
+    Recibe una Nota Simple (PDF/imagen) y extrae dirección, ref catastral y nº finca.
+    Devuelve 422 si el documento no es una Nota Simple.
     """
-    # 1. Validar la extensión del archivo
     extension = os.path.splitext(file.filename.lower())[1]
     if extension not in EXTENSIONES_PERMITIDAS:
         raise HTTPException(
@@ -30,19 +29,23 @@ async def upload_documento(file: UploadFile = File(...)):
             detail=f"Formato no soportado: '{extension}'. Usa: {', '.join(EXTENSIONES_PERMITIDAS)}"
         )
 
-    # 2. Guardar el archivo temporalmente
     temp_path = f"/tmp/arraspro_{file.filename}"
     try:
         with open(temp_path, "wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
 
-        # 3. Intentar extraer datos (por defecto como Nota Simple)
         datos = extraer_datos_nota_simple(temp_path)
 
         if datos is None:
             raise HTTPException(
                 status_code=500,
-                detail="La IA no pudo extraer datos del documento. Asegúrate de subir una Nota Simple legible."
+                detail="La IA no pudo procesar el documento. Inténtalo de nuevo."
+            )
+
+        if isinstance(datos, dict) and datos.get("error") == "no_es_nota_simple":
+            raise HTTPException(
+                status_code=422,
+                detail="Por favor envíe una nota simple (PDF o imagen) o ingrese los datos manualmente."
             )
 
         return {
@@ -51,11 +54,10 @@ async def upload_documento(file: UploadFile = File(...)):
         }
 
     except HTTPException:
-        raise  # Re-lanzar excepciones HTTP sin modificar
+        raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error procesando el documento: {str(e)}")
     finally:
-        # 4. Limpiar archivo temporal
         if os.path.exists(temp_path):
             os.remove(temp_path)
 
@@ -63,7 +65,8 @@ async def upload_documento(file: UploadFile = File(...)):
 @router.post("/upload-dni")
 async def upload_dni(file: UploadFile = File(...)):
     """
-    Recibe una imagen de DNI y extrae nombre, DNI y domicilio con IA.
+    Recibe un DNI/NIE/pasaporte y extrae nombre, número e identidad.
+    Devuelve 422 si el documento no es un documento de identidad.
     """
     extension = os.path.splitext(file.filename.lower())[1]
     if extension not in EXTENSIONES_PERMITIDAS:
@@ -82,7 +85,13 @@ async def upload_dni(file: UploadFile = File(...)):
         if datos is None:
             raise HTTPException(
                 status_code=500,
-                detail="La IA no pudo extraer datos del DNI."
+                detail="La IA no pudo procesar el documento. Inténtalo de nuevo."
+            )
+
+        if isinstance(datos, dict) and datos.get("error") == "no_es_dni":
+            raise HTTPException(
+                status_code=422,
+                detail="Envía tu DNI o ingresa los datos manualmente."
             )
 
         return {

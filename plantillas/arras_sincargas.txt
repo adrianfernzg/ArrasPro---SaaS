@@ -14,7 +14,7 @@ De otra parte, como la parte VENDEDORA:
 
 **MANIFIESTAN**
 
-I.- Que la parte VENDEDORA es propietaria del inmueble sito en **[DIRECCION_FINCA]**, con Referencia Catastral **[REFERENCIA_CATASTRAL]**.
+I.- Que la parte VENDEDORA es propietaria del inmueble sito en **[DIRECCION_FINCA]**, con Referencia Catastral **[REFERENCIA_CATASTRAL]** e inscrita en el Registro de la Propiedad al número de finca **[NUMERO_FINCA]**, con una superficie construida de **[METROS_CONSTRUIDOS] m²** y superficie total de **[SUPERFICIE_TOTAL] m²**.
 
 II.- Que dicho inmueble se encuentra libre de cargas, gravámenes, arrendatarios y al corriente en el pago de impuestos y gastos de comunidad.
 
@@ -34,7 +34,7 @@ El precio total de la compraventa se fija en **[PRECIO_TOTAL]** EUROS, que se ab
 La entrega de llaves y de la posesión se realizará en el momento de la firma de la escritura pública. La parte COMPRADORA tendrá derecho a elegir Notaría, debiendo formalizarse la escritura antes del día **[FECHA_LIMITE]**.
 
 **CUARTA. - GASTOS.**
-Los gastos e impuestos derivados de la escritura se abonarán conforme a Ley: la parte VENDEDORA abonará la Plusvalía Municipal y la parte COMPRADORA abonará el ITP (Impuesto de Transmisiones), Notaría, Gestión y Registro.
+Los gastos e impuestos derivados de la escritura se abonarán conforme a Ley: la parte VENDEDORA abonará la Plusvalía Municipal y la parte COMPRADORA abonará el ITP (Impuesto de Transmisiones), Notaría y Registro.
 
 **QUINTA. - INCUMPLIMIENTO.**
 Si la parte COMPRADORA incumpliera su obligación de pago, perderá las cantidades entregadas. Si el incumplimiento fuera de la parte VENDEDORA, deberá devolver a la parte COMPRADORA el doble de las cantidades recibidas, conforme al artículo 1.454 del Código Civil.

@@ -21,7 +21,7 @@
     <link rel="icon" type="image/png" href="/static/imagenes/logo.png">
 
     <!-- Scripts de lógica (Deben cargar antes que Alpine) -->
-    <script src="js/app.js?v=6.0"></script>
+    <script src="js/app.js?v=7.4"></script>
 
     <!-- Alpine.js para reactividad -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
@@ -35,7 +35,7 @@
     <link rel="stylesheet" href="css/header.css?v=1.1">
     <link rel="stylesheet" href="css/landing.css?v=1.1">
     <link rel="stylesheet" href="css/selector.css?v=1.1">
-    <link rel="stylesheet" href="css/editor.css?v=1.1">
+    <link rel="stylesheet" href="css/editor.css?v=1.2">
     <link rel="stylesheet" href="css/dashboard.css?v=1.1">
     <link rel="stylesheet" href="css/modal.css?v=1.1">
     <link rel="stylesheet" href="css/footer.css?v=1.1">
@@ -274,41 +274,6 @@
                             <h3><i data-lucide="clipboard-list"></i> Datos del Contrato</h3>
                         </div>
 
-                        <!-- Zona de subida de documentos con IA -->
-                        <div class="upload-section">
-                            <div class="upload-zone" id="drop-zone"
-                                @click="document.getElementById('file-input').click()"
-                                @dragover.prevent="dragOver = true" @dragleave.prevent="dragOver = false"
-                                @drop.prevent="handleFileDrop($event)"
-                                :class="{ 'drag-active': dragOver, 'upload-success': uploadSuccess }">
-                                <template x-if="!uploading && !uploadSuccess">
-                                    <div class="upload-content">
-                                        <div class="upload-icon"><i data-lucide="cloud-upload"></i></div>
-                                        <p class="upload-title">Sube tu Nota Simple o DNI</p>
-                                        <p class="upload-hint">Arrastra aquí o haz clic para seleccionar (PDF/Imagen)
-                                        </p>
-                                    </div>
-                                </template>
-                                <template x-if="uploading">
-                                    <div class="upload-content">
-                                        <div class="upload-spinner"></div>
-                                        <p class="upload-title">Procesando con IA...</p>
-                                        <p class="upload-hint">Extrayendo datos del documento</p>
-                                    </div>
-                                </template>
-                                <template x-if="uploadSuccess">
-                                    <div class="upload-content">
-                                        <div class="upload-icon upload-icon-success"><i data-lucide="check-circle"></i>
-                                        </div>
-                                        <p class="upload-title">¡Datos extraídos con éxito!</p>
-                                        <p class="upload-hint">Los campos se han rellenado automáticamente</p>
-                                    </div>
-                                </template>
-                                <input type="file" id="file-input" hidden accept=".pdf,.jpg,.jpeg,.png"
-                                    @change="handleFileUpload($event)">
-                            </div>
-                        </div>
-
                         <!-- Formulario de vendedores -->
                         <div class="form-section">
                             <div class="form-section-header">
@@ -334,6 +299,27 @@
                                                 <line x1="14" x2="14" y1="11" y2="17" />
                                             </svg>
                                         </button>
+                                    </div>
+                                    <div class="upload-mini"
+                                        @click="document.getElementById('file-v-'+index).click()"
+                                        @dragover.prevent="uploadingTargets['v-'+index+'-drag'] = true"
+                                        @dragleave.prevent="uploadingTargets['v-'+index+'-drag'] = false"
+                                        @drop.prevent="uploadingTargets['v-'+index+'-drag'] = false; handleDniDrop($event, 'vendedor', index)"
+                                        :class="{ 'drag-active': uploadingTargets['v-'+index+'-drag'], 'is-uploading': uploadingTargets['v-'+index] }">
+                                        <template x-if="!uploadingTargets['v-'+index]">
+                                            <div class="upload-mini-content">
+                                                <i data-lucide="id-card"></i>
+                                                <span>Arrastra aquí tu documento de identidad (DNI, NIE o pasaporte — imagen o PDF)</span>
+                                            </div>
+                                        </template>
+                                        <template x-if="uploadingTargets['v-'+index]">
+                                            <div class="upload-mini-content">
+                                                <div class="upload-spinner upload-spinner-sm"></div>
+                                                <span>Procesando documento con IA…</span>
+                                            </div>
+                                        </template>
+                                        <input type="file" :id="'file-v-'+index" hidden accept=".pdf,.jpg,.jpeg,.png"
+                                            @change="handleDniChange($event, 'vendedor', index)">
                                     </div>
                                     <div class="form-grid">
                                         <div class="form-group">
@@ -381,6 +367,27 @@
                                             </svg>
                                         </button>
                                     </div>
+                                    <div class="upload-mini"
+                                        @click="document.getElementById('file-c-'+index).click()"
+                                        @dragover.prevent="uploadingTargets['c-'+index+'-drag'] = true"
+                                        @dragleave.prevent="uploadingTargets['c-'+index+'-drag'] = false"
+                                        @drop.prevent="uploadingTargets['c-'+index+'-drag'] = false; handleDniDrop($event, 'comprador', index)"
+                                        :class="{ 'drag-active': uploadingTargets['c-'+index+'-drag'], 'is-uploading': uploadingTargets['c-'+index] }">
+                                        <template x-if="!uploadingTargets['c-'+index]">
+                                            <div class="upload-mini-content">
+                                                <i data-lucide="id-card"></i>
+                                                <span>Arrastra aquí tu documento de identidad (DNI, NIE o pasaporte — imagen o PDF)</span>
+                                            </div>
+                                        </template>
+                                        <template x-if="uploadingTargets['c-'+index]">
+                                            <div class="upload-mini-content">
+                                                <div class="upload-spinner upload-spinner-sm"></div>
+                                                <span>Procesando documento con IA…</span>
+                                            </div>
+                                        </template>
+                                        <input type="file" :id="'file-c-'+index" hidden accept=".pdf,.jpg,.jpeg,.png"
+                                            @change="handleDniChange($event, 'comprador', index)">
+                                    </div>
                                     <div class="form-grid">
                                         <div class="form-group">
                                             <label>Nombre completo</label>
@@ -413,64 +420,42 @@
                                         placeholder="Ej: Calle Velázquez 42, 3ºB, Madrid">
                                 </div>
                                 <div class="form-group">
-                                    <label>Precio total (€)</label>
+                                    <label>Referencia Catastral</label>
+                                    <input type="text" x-model="contrato.finca.referencia_catastral"
+                                        placeholder="Ej: 9872023VH5797S0001WX">
+                                </div>
+                                <div class="form-group">
+                                    <label>Número de Finca Registral</label>
+                                    <input type="text" x-model="contrato.finca.numero_finca"
+                                        placeholder="Ej: 12345">
+                                </div>
+                                <div class="form-group">
+                                    <label>Metros construidos (m²)</label>
+                                    <input type="text" x-model="contrato.finca.metros_construidos"
+                                        placeholder="Ej: 90">
+                                </div>
+                                <div class="form-group">
+                                    <label>Superficie total (m²)</label>
+                                    <input type="text" x-model="contrato.finca.superficie_total"
+                                        placeholder="Ej: 95">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Detalle del Precio (compraventa sin cargas) -->
+                        <div class="form-section" x-show="contrato.tipo === 'arras_sin_cargas'" x-transition>
+                            <div class="form-section-header">
+                                <h4><i data-lucide="coins"></i> Detalle del Precio</h4>
+                            </div>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label>Precio finca (€)</label>
                                     <input type="text" x-model="contrato.finca.precio" placeholder="Ej: 240.000">
                                 </div>
                                 <div class="form-group">
                                     <label>Cantidad de arras (€)</label>
                                     <input type="text" x-model="contrato.finca.arras" placeholder="Ej: 24.000">
                                 </div>
-                            </div>
-                        </div>
-
-                        <!-- Fechas -->
-                        <div class="form-section">
-                            <div class="form-section-header">
-                                <h4><i data-lucide="calendar"></i> Fechas</h4>
-                            </div>
-                            <div class="form-grid">
-                                <div class="form-group">
-                                    <label>Fecha de firma</label>
-                                    <input type="date" x-model="contrato.fechas.firma">
-                                </div>
-                                <div class="form-group">
-                                    <label>Fecha límite de escritura</label>
-                                    <input type="date" x-model="contrato.fechas.limite">
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Campos extra: ciudad, referencia catastral, ciudad juzgados -->
-                        <div class="form-section">
-                            <div class="form-section-header">
-                                <h4><i data-lucide="map"></i> Localización y Referencia</h4>
-                            </div>
-                            <div class="form-grid">
-                                <div class="form-group">
-                                    <label>Ciudad del contrato</label>
-                                    <input type="text" x-model="contrato.finca.ciudad" placeholder="Ej: Madrid">
-                                </div>
-                                <div class="form-group">
-                                    <label>Ciudad juzgados</label>
-                                    <input type="text" x-model="contrato.finca.ciudad_juzgados"
-                                        placeholder="Ej: Madrid">
-                                </div>
-                                <div class="form-group form-group-full">
-                                    <label>Referencia Catastral</label>
-                                    <input type="text" x-model="contrato.finca.referencia_catastral"
-                                        placeholder="Ej: 9872023VH5797S0001WX">
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Campos extra según tipo de contrato -->
-
-                        <!-- Arras sin cargas: Resto en escritura -->
-                        <div class="form-section" x-show="contrato.tipo === 'arras_sin_cargas'" x-transition>
-                            <div class="form-section-header">
-                                <h4><i data-lucide="coins"></i> Detalle del Precio</h4>
-                            </div>
-                            <div class="form-grid">
                                 <div class="form-group form-group-full">
                                     <label>Resto a abonar en escritura (€)</label>
                                     <input type="text" x-model="contrato.extra.resto_escritura"
@@ -479,7 +464,34 @@
                             </div>
                         </div>
 
-                        <!-- Arras con cargas: Descripción de la carga -->
+                        <!-- Detalle del Precio (compraventa con cargas / hipoteca) -->
+                        <div class="form-section" x-show="contrato.tipo === 'arras_con_cargas'" x-transition>
+                            <div class="form-section-header">
+                                <h4><i data-lucide="coins"></i> Detalle del Precio</h4>
+                            </div>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label>Precio finca (€)</label>
+                                    <input type="text" x-model="contrato.finca.precio" placeholder="Ej: 240.000">
+                                </div>
+                                <div class="form-group">
+                                    <label>Cantidad de arras (€)</label>
+                                    <input type="text" x-model="contrato.finca.arras" placeholder="Ej: 24.000">
+                                </div>
+                                <div class="form-group">
+                                    <label>Cantidad hipoteca (€)</label>
+                                    <input type="text" x-model="contrato.extra.cantidad_hipoteca"
+                                        placeholder="Ej: 100.000">
+                                </div>
+                                <div class="form-group">
+                                    <label>Resto a abonar en escritura (€)</label>
+                                    <input type="text" x-model="contrato.extra.resto_escritura"
+                                        placeholder="Ej: 116.000">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Descripción de la carga (solo con cargas) -->
                         <div class="form-section" x-show="contrato.tipo === 'arras_con_cargas'" x-transition>
                             <div class="form-section-header">
                                 <h4><i data-lucide="alert-triangle"></i> Descripción de la Carga</h4>
@@ -493,10 +505,10 @@
                             </div>
                         </div>
 
-                        <!-- Alquiler: Campos específicos -->
+                        <!-- Detalle del Arrendamiento (alquiler) -->
                         <div class="form-section" x-show="contrato.tipo === 'alquiler'" x-transition>
                             <div class="form-section-header">
-                                <h4><i data-lucide="key"></i> Datos del Arrendamiento</h4>
+                                <h4><i data-lucide="key"></i> Detalle del Arrendamiento</h4>
                             </div>
                             <div class="form-grid">
                                 <div class="form-group">
@@ -527,10 +539,66 @@
                                         <option value="ARRENDATARIO">Arrendatario</option>
                                     </select>
                                 </div>
+                                <div class="form-group">
+                                    <label>Pagador luz</label>
+                                    <select x-model="contrato.extra.pagador_luz">
+                                        <option value="ARRENDADOR">Arrendador</option>
+                                        <option value="ARRENDATARIO">Arrendatario</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Pagador agua</label>
+                                    <select x-model="contrato.extra.pagador_agua">
+                                        <option value="ARRENDADOR">Arrendador</option>
+                                        <option value="ARRENDATARIO">Arrendatario</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Pagador gas</label>
+                                    <select x-model="contrato.extra.pagador_gas">
+                                        <option value="ARRENDADOR">Arrendador</option>
+                                        <option value="ARRENDATARIO">Arrendatario</option>
+                                    </select>
+                                </div>
                                 <div class="form-group form-group-full">
                                     <label>IBAN arrendador</label>
                                     <input type="text" x-model="contrato.extra.iban_arrendador"
                                         placeholder="Ej: ES12 1234 1234 1234 1234 1234">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Fechas -->
+                        <div class="form-section" x-show="contrato.tipo !== 'alquiler'" x-transition>
+                            <div class="form-section-header">
+                                <h4><i data-lucide="calendar"></i> Fechas</h4>
+                            </div>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label>Fecha de firma</label>
+                                    <input type="date" x-model="contrato.fechas.firma">
+                                </div>
+                                <div class="form-group">
+                                    <label>Fecha límite de escritura</label>
+                                    <input type="date" x-model="contrato.fechas.limite">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Localización jurisdiccional -->
+                        <div class="form-section">
+                            <div class="form-section-header">
+                                <h4><i data-lucide="map"></i> Localización</h4>
+                            </div>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label>Ciudad del contrato</label>
+                                    <input type="text" x-model="contrato.finca.ciudad" placeholder="Ej: Madrid">
+                                </div>
+                                <div class="form-group">
+                                    <label>Ciudad juzgados</label>
+                                    <input type="text" x-model="contrato.finca.ciudad_juzgados"
+                                        placeholder="Ej: Madrid">
                                 </div>
                             </div>
                         </div>

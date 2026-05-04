@@ -12,7 +12,7 @@ De otra parte, como la parte VENDEDORA:
 
 **MANIFIESTAN**
 
-I.- Que la parte VENDEDORA es propietaria del inmueble sito en **[DIRECCION_FINCA]**, con Referencia Catastral **[REFERENCIA_CATASTRAL]**.
+I.- Que la parte VENDEDORA es propietaria del inmueble sito en **[DIRECCION_FINCA]**, con Referencia Catastral **[REFERENCIA_CATASTRAL]** e inscrita en el Registro de la Propiedad al número de finca **[NUMERO_FINCA]**, con una superficie construida de **[METROS_CONSTRUIDOS] m²** y superficie total de **[SUPERFICIE_TOTAL] m²**.
 
 II.- Que dicho inmueble se encuentra grabado con la siguiente carga: **[DESCRIPCION_CARGA]** (ej. Hipoteca con la entidad Banco X).
 

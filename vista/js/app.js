@@ -67,6 +67,9 @@ function appState() {
                 precio: '',
                 arras: '',
                 referencia_catastral: '',
+                numero_finca: '',
+                metros_construidos: '',
+                superficie_total: '',
                 ciudad: '',
                 ciudad_juzgados: ''
             },
@@ -75,23 +78,25 @@ function appState() {
             // Campos específicos por tipo
             extra: {
                 descripcion_carga: '',      // arras_con_cargas
-                resto_escritura: '',        // arras_sin_cargas
+                cantidad_hipoteca: '',      // arras_con_cargas
+                resto_escritura: '',        // arras_sin_cargas / arras_con_cargas
                 duracion_anos: '',          // alquiler
                 fecha_entrada: '',          // alquiler
                 renta_anual: '',            // alquiler
                 renta_mensual: '',          // alquiler
                 iban_arrendador: '',        // alquiler
                 fianza_euros: '',           // alquiler
-                pagador_ibi: 'ARRENDADOR'  // alquiler
+                pagador_ibi: 'ARRENDADOR',  // alquiler
+                pagador_luz: 'ARRENDATARIO',
+                pagador_agua: 'ARRENDATARIO',
+                pagador_gas: 'ARRENDATARIO'
             }
         },
 
         // ========================
         // EDITOR / UPLOAD
         // ========================
-        dragOver: false,
-        uploading: false,
-        uploadSuccess: false,
+        uploadingTargets: {},
 
         // ========================
         // DASHBOARD
@@ -247,6 +252,9 @@ function appState() {
                     precio: '',
                     arras: '',
                     referencia_catastral: '',
+                    numero_finca: '',
+                    metros_construidos: '',
+                    superficie_total: '',
                     ciudad: '',
                     ciudad_juzgados: ''
                 },
@@ -254,6 +262,7 @@ function appState() {
                 clausulas: [],
                 extra: {
                     descripcion_carga: '',
+                    cantidad_hipoteca: '',
                     resto_escritura: '',
                     duracion_anos: '',
                     fecha_entrada: '',
@@ -261,9 +270,13 @@ function appState() {
                     renta_mensual: '',
                     iban_arrendador: '',
                     fianza_euros: '',
-                    pagador_ibi: 'ARRENDADOR'
+                    pagador_ibi: 'ARRENDADOR',
+                    pagador_luz: 'ARRENDATARIO',
+                    pagador_agua: 'ARRENDATARIO',
+                    pagador_gas: 'ARRENDATARIO'
                 }
             };
+            this.uploadingTargets = {};
         },
 
         scrollToFeatures() {
@@ -290,7 +303,7 @@ function appState() {
             // Solo si la librería de Google ha cargado
             if (typeof google !== 'undefined') {
                 google.accounts.id.initialize({
-                    client_id: "641197400675-ga0jsgi5ivl5qntr2824lbpuuvqlt1o3.apps.googleusercontent.com",
+                    client_id: "423882263508-3u4jg64j1i83eff6l92hjubnhl6nk2co.apps.googleusercontent.com",
                     callback: (response) => this.handleGoogleCredentialResponse(response),
                     auto_select: false,
                     cancel_on_tap_outside: true
@@ -546,11 +559,14 @@ function appState() {
                 return `<p class="paper-text">D./Dña. <strong>${nombre}</strong>, con DNI/NIE <strong>${dni}</strong>, con domicilio en <strong>${dom}</strong>.</p>`;
             }).join('');
 
-            const ciudad = blank(c.finca.ciudad, 'Madrid');
+            const ciudad = blank(c.finca.ciudad, '________________');
             const fechaFirma = fmt(c.fechas.firma);
             const fechaLimite = fmt(c.fechas.limite);
             const direccion = blank(c.finca.direccion, '________________________________');
             const refCatastral = blank(c.finca.referencia_catastral, '________________');
+            const numFinca = blank(c.finca.numero_finca, '________');
+            const metrosConstruidos = blank(c.finca.metros_construidos, '____');
+            const superficieTotal = blank(c.finca.superficie_total, '____');
             const ciudadJuzgados = blank(c.finca.ciudad_juzgados, ciudad);
             const precio = blank(c.finca.precio, '________');
             const arras = blank(c.finca.arras, '________');
@@ -564,7 +580,7 @@ function appState() {
                     `<p class="paper-text"><strong>PRIMERA. - OBJETO.</strong><br>La parte VENDEDORA vende a la parte COMPRADORA, que compra, el inmueble descrito en el Manifiesto I como cuerpo cierto y en el estado actual de conservación que el comprador declara conocer.</p>`,
                     `<p class="paper-text"><strong>SEGUNDA. - PRECIO.</strong><br>El precio total de la compraventa se fija en <strong>${precio} EUROS</strong>, que se abonará de la siguiente forma:<br>1. La cantidad de <strong>${arras} EUROS</strong>, entregada previamente en concepto de arras.<br>2. La cantidad de <strong>${resto} EUROS</strong>, que se abonará mediante cheque bancario en el acto de otorgamiento de la escritura pública.</p>`,
                     `<p class="paper-text"><strong>TERCERA. - ESCRITURACIÓN Y POSESIÓN.</strong><br>La entrega de llaves y de la posesión se realizará en el momento de la firma de la escritura pública. La parte COMPRADORA elegirá Notaría, debiendo formalizarse la escritura antes del día <strong>${fechaLimite}</strong>.</p>`,
-                    `<p class="paper-text"><strong>CUARTA. - GASTOS.</strong><br>Los gastos e impuestos derivados de la escritura se abonarán conforme a Ley: la parte VENDEDORA abonará la Plusvalía Municipal y la parte COMPRADORA abonará el ITP, Notaría, Gestión y Registro.</p>`,
+                    `<p class="paper-text"><strong>CUARTA. - GASTOS.</strong><br>Los gastos e impuestos derivados de la escritura se abonarán conforme a Ley: la parte VENDEDORA abonará la Plusvalía Municipal y la parte COMPRADORA abonará el ITP, Notaría y Registro.</p>`,
                     `<p class="paper-text"><strong>QUINTA. - INCUMPLIMIENTO.</strong><br>Si la parte COMPRADORA incumpliera su obligación de pago, perderá las cantidades entregadas. Si el incumplimiento fuera de la parte VENDEDORA, deberá devolver el doble de las cantidades recibidas, conforme al artículo 1.454 del Código Civil.</p>`,
                     `<p class="paper-text"><strong>SEXTA. - JURISDICCIÓN.</strong><br>Para cualquier controversia, las partes se someten a los Juzgados y Tribunales de <strong>${ciudadJuzgados}</strong>.</p>`
                 ];
@@ -582,7 +598,7 @@ function appState() {
                     <p class="paper-text"><em>De otra parte, como la parte VENDEDORA:</em></p>
                     ${bloqueVendedores}
                     <h3 class="paper-subtitle">MANIFIESTAN</h3>
-                    <p class="paper-text">I.- Que la parte VENDEDORA es propietaria del inmueble sito en <strong>${direccion}</strong>, con Referencia Catastral <strong>${refCatastral}</strong>.</p>
+                    <p class="paper-text">I.- Que la parte VENDEDORA es propietaria del inmueble sito en <strong>${direccion}</strong>, con Referencia Catastral <strong>${refCatastral}</strong> e inscrita en el Registro de la Propiedad al número de finca <strong>${numFinca}</strong>, con una superficie construida de <strong>${metrosConstruidos} m²</strong> y superficie total de <strong>${superficieTotal} m²</strong>.</p>
                     <p class="paper-text">II.- Que dicho inmueble se encuentra libre de cargas, gravámenes, arrendatarios y al corriente en el pago de impuestos y gastos de comunidad.</p>
                     <p class="paper-text">III.- Que ambas partes han convenido la compraventa del inmueble conforme a las siguientes:</p>
                     <h3 class="paper-subtitle">ESTIPULACIONES</h3>
@@ -617,7 +633,7 @@ function appState() {
                     <p class="paper-text"><em>De otra parte, como la parte VENDEDORA:</em></p>
                     ${bloqueVendedores}
                     <h3 class="paper-subtitle">MANIFIESTAN</h3>
-                    <p class="paper-text">I.- Que la parte VENDEDORA es propietaria del inmueble sito en <strong>${direccion}</strong>, con Referencia Catastral <strong>${refCatastral}</strong>.</p>
+                    <p class="paper-text">I.- Que la parte VENDEDORA es propietaria del inmueble sito en <strong>${direccion}</strong>, con Referencia Catastral <strong>${refCatastral}</strong> e inscrita en el Registro de la Propiedad al número de finca <strong>${numFinca}</strong>, con una superficie construida de <strong>${metrosConstruidos} m²</strong> y superficie total de <strong>${superficieTotal} m²</strong>.</p>
                     <p class="paper-text">II.- Que dicho inmueble se encuentra gravado con la siguiente carga: <strong>${carga}</strong>.</p>
                     <p class="paper-text">III.- Que ambas partes han convenido la compraventa del inmueble conforme a las siguientes:</p>
                     <h3 class="paper-subtitle">ESTIPULACIONES</h3>
@@ -637,12 +653,15 @@ function appState() {
                 const iban = blank(ex.iban_arrendador, 'ES__ ____ ____ ____ ____ ____');
                 const fianza = blank(ex.fianza_euros, '________');
                 const pagadorIBI = blank(ex.pagador_ibi, 'ARRENDADOR');
+                const pagadorLuz = blank(ex.pagador_luz, 'ARRENDATARIO');
+                const pagadorAgua = blank(ex.pagador_agua, 'ARRENDATARIO');
+                const pagadorGas = blank(ex.pagador_gas, 'ARRENDATARIO');
 
                 const clausulasBase = [
                     `<p class="paper-text"><strong>PRIMERA. - DURACIÓN.</strong><br>El arrendamiento se pacta por un plazo de <strong>${duracion}</strong> año/s, a contar desde el día <strong>${fEntrada}</strong>. El contrato se prorrogará obligatoriamente por plazos anuales hasta alcanzar una duración mínima de 5 años (o 7 si el arrendador es persona jurídica), conforme a la LAU.</p>`,
                     `<p class="paper-text"><strong>SEGUNDA. - RENTA.</strong><br>La renta anual fijada es de <strong>${rentaAnual} EUROS</strong>, a pagar en mensualidades anticipadas de <strong>${rentaMens} EUROS</strong>, dentro de los siete primeros días de cada mes.<br>El pago se realizará mediante transferencia bancaria a la cuenta: <strong>${iban}</strong>.</p>`,
                     `<p class="paper-text"><strong>TERCERA. - FIANZA.</strong><br>La parte arrendataria hace entrega en este acto de la suma de <strong>${fianza} EUROS</strong>, equivalente a una mensualidad de renta, en concepto de fianza legal.</p>`,
-                    `<p class="paper-text"><strong>CUARTA. - GASTOS.</strong><br>Los gastos de suministros (luz, agua, gas) serán de cuenta exclusiva del ARRENDATARIO. Los gastos de comunidad e IBI serán por cuenta del <strong>${pagadorIBI}</strong>.</p>`,
+                    `<p class="paper-text"><strong>CUARTA. - GASTOS.</strong><br>Los gastos de suministros se distribuyen conforme al acuerdo entre las partes: Luz a cargo del <strong>${pagadorLuz}</strong>; Agua a cargo del <strong>${pagadorAgua}</strong>; Gas a cargo del <strong>${pagadorGas}</strong>. Los gastos de comunidad e IBI serán por cuenta del <strong>${pagadorIBI}</strong>.</p>`,
                     `<p class="paper-text"><strong>QUINTA. - DESTINO.</strong><br>La vivienda se alquila exclusivamente para satisfacer la necesidad permanente de vivienda del arrendatario, prohibiéndose el subarriendo total o parcial.</p>`,
                     `<p class="paper-text"><strong>SEXTA. - JURISDICCIÓN.</strong><br>Para cualquier controversia que pudiera surgir, las partes se someten a los Juzgados y Tribunales de <strong>${ciudadJuzgados}</strong>.</p>`
                 ];
@@ -661,7 +680,7 @@ function appState() {
                     ${bloqueCompradores}
                     <p class="paper-text">Ambas partes se reconocen capacidad legal suficiente para el otorgamiento del presente contrato de arrendamiento.</p>
                     <h3 class="paper-subtitle">EXPONEN</h3>
-                    <p class="paper-text">I. Que la parte arrendadora es propietaria de la vivienda situada en:<br><strong>Dirección:</strong> ${direccion}<br><strong>Referencia Catastral:</strong> ${refCatastral}</p>
+                    <p class="paper-text">I. Que la parte arrendadora es propietaria de la vivienda situada en:<br><strong>Dirección:</strong> ${direccion}<br><strong>Referencia Catastral:</strong> ${refCatastral}<br><strong>Número de Finca Registral:</strong> ${numFinca}<br><strong>Superficie construida:</strong> ${metrosConstruidos} m²<br><strong>Superficie total:</strong> ${superficieTotal} m²</p>
                     <p class="paper-text">II. Que la parte arrendataria está interesada en el alquiler de dicha vivienda para su uso exclusivo de residencia habitual.</p>
                     <h3 class="paper-subtitle">CLÁUSULAS</h3>
                     ${clausulasBase.join('')}
@@ -707,65 +726,21 @@ function appState() {
         // ========================
         // SUBIDA DE ARCHIVOS / IA
         // ========================
-        handleFileDrop(event) {
-            this.dragOver = false;
+        handleDniDrop(event, type, index) {
             const files = event.dataTransfer.files;
-            if (files.length > 0) {
-                this.processFile(files[0]);
-            }
+            if (files.length > 0) this.processDniUpload(files[0], type, index);
         },
 
-        handleFileUpload(event) {
+        handleDniChange(event, type, index) {
             const files = event.target.files;
-            if (files.length > 0) {
-                this.processFile(files[0]);
-            }
+            if (files.length > 0) this.processDniUpload(files[0], type, index);
+            event.target.value = '';
         },
 
-        async processFile(file) {
-            this.uploading = true;
-            this.uploadSuccess = false;
+        async processDniUpload(file, type, index) {
+            const key = (type === 'vendedor' ? 'v-' : 'c-') + index;
+            this.uploadingTargets[key] = true;
 
-            try {
-                const formData = new FormData();
-                formData.append('file', file);
-
-                const response = await fetch(`${API_BASE}/documentos/upload`, {
-                    method: 'POST',
-                    body: formData
-                });
-
-                if (response.ok) {
-                    const result = await response.json();
-                    const datos = result.datos;
-
-                    // Rellenar los campos del formulario con los datos extraídos
-                    if (datos) {
-                        if (datos.NOMBRE_VENDEDOR) this.contrato.vendedores[0].nombre = datos.NOMBRE_VENDEDOR;
-                        if (datos.DNI_VENDEDOR) this.contrato.vendedores[0].dni = datos.DNI_VENDEDOR;
-                        if (datos.DOMICILIO_VENDEDOR) this.contrato.vendedores[0].domicilio = datos.DOMICILIO_VENDEDOR;
-                        if (datos.DIRECCION_FINCA) this.contrato.finca.direccion = datos.DIRECCION_FINCA;
-                        if (datos.CUOTA_PARTICIPACION) {
-                            this.showToast('Nota Simple detectada con éxito', 'success', 'sparkles');
-                        }
-                    }
-
-                    this.uploadSuccess = true;
-                    this.showToast('Datos extraídos correctamente por la IA', 'success', 'sparkles');
-                } else {
-                    throw new Error('Error en la respuesta del servidor');
-                }
-            } catch (error) {
-                // Simulación si la API no está disponible
-                await this.simulateAIExtraction();
-            }
-
-            this.uploading = false;
-            this.$nextTick(() => lucide.createIcons());
-        },
-
-        async processDni(file) {
-            this.uploading = true;
             try {
                 const formData = new FormData();
                 formData.append('file', file);
@@ -773,32 +748,30 @@ function appState() {
                     method: 'POST',
                     body: formData
                 });
-                if (response.ok) {
+
+                if (response.status === 422) {
+                    const err = await response.json();
+                    this.showToast(err.detail || 'Envía tu DNI o ingresa los datos manualmente.', 'error', 'alert-triangle');
+                } else if (response.ok) {
                     const result = await response.json();
-                    const d = result.datos;
-                    // Rellenar en el primer vendedor por defecto
-                    if (d.NOMBRE) this.contrato.vendedores[0].nombre = d.NOMBRE;
-                    if (d.DNI) this.contrato.vendedores[0].dni = d.DNI;
-                    if (d.DOMICILIO) this.contrato.vendedores[0].domicilio = d.DOMICILIO;
-                    this.showToast('DNI procesado con éxito', 'success', 'user-check');
+                    const d = result.datos || {};
+                    const target = type === 'vendedor' ? this.contrato.vendedores[index] : this.contrato.compradores[index];
+                    if (target) {
+                        if (d.NOMBRE) target.nombre = d.NOMBRE;
+                        if (d.DNI) target.dni = d.DNI;
+                        if (d.DOMICILIO) target.domicilio = d.DOMICILIO;
+                    }
+                    this.showToast('Documento de identidad procesado correctamente', 'success', 'user-check');
+                } else {
+                    const err = await response.json().catch(() => ({}));
+                    this.showToast(err.detail || 'Error procesando el documento', 'error', 'alert-circle');
                 }
             } catch (e) {
-                this.showToast('Error procesando DNI', 'error', 'alert-circle');
+                this.showToast('Error de conexión al procesar el documento', 'error', 'alert-circle');
             }
-            this.uploading = false;
-        },
 
-        async simulateAIExtraction() {
-            // Simulamos un delay de la IA
-            await new Promise(resolve => setTimeout(resolve, 2000));
-
-            this.contrato.vendedores[0].nombre = 'Juan Pérez García';
-            this.contrato.vendedores[0].dni = '12345678A';
-            this.contrato.vendedores[0].domicilio = 'Calle Mayor 15, Madrid';
-            this.contrato.finca.direccion = 'Calle Velázquez 42, 3ºB, Madrid';
-
-            this.uploadSuccess = true;
-            this.showToast('Datos extraídos correctamente (demo)', 'success', 'sparkles');
+            this.uploadingTargets[key] = false;
+            this.$nextTick(() => lucide.createIcons());
         },
 
         // ========================

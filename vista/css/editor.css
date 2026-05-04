@@ -252,6 +252,57 @@
     margin-bottom: 0.5rem;
 }
 
+.upload-spinner-sm {
+    width: 18px;
+    height: 18px;
+    border-width: 2px;
+    margin-bottom: 0;
+    flex-shrink: 0;
+}
+
+/* Zona de subida compacta (dentro de bloques) */
+.upload-mini {
+    display: flex;
+    align-items: center;
+    border: 1.5px dashed var(--border-color);
+    background: var(--bg-primary);
+    border-radius: var(--radius-md);
+    padding: 0.65rem 0.85rem;
+    margin: 0.5rem 0 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.upload-mini:hover,
+.upload-mini.drag-active {
+    border-color: var(--primary);
+    background: var(--primary-lighter);
+}
+
+.upload-mini.is-uploading {
+    border-style: solid;
+    border-color: var(--primary);
+    background: var(--primary-lighter);
+    cursor: progress;
+}
+
+.upload-mini-content {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: var(--font-size-xs);
+    color: var(--text-secondary);
+    line-height: 1.3;
+    width: 100%;
+}
+
+.upload-mini-content i {
+    width: 18px;
+    height: 18px;
+    color: var(--primary);
+    flex-shrink: 0;
+}
+
 /* --- Secciones del formulario --- */
 .form-section {
     padding: 1.25rem 1.5rem;
