@@ -1,23 +1,17 @@
 """
 servicio_email.py - Servicio para el envío de correos electrónicos.
-Permite enviar correos de bienvenida y recuperación usando la URL pública
-correcta según el entorno.
+Usa la API HTTP de Resend en lugar de SMTP directo (Railway bloquea SMTP saliente).
 """
 
 import os
-import smtplib
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
+import requests
 from dotenv import load_dotenv
 
 load_dotenv()
 
-# Configuración SMTP
-SMTP_SERVER = os.getenv("SMTP_SERVER", "smtp.gmail.com")
-SMTP_PORT = int(os.getenv("SMTP_PORT", "587"))
-SMTP_USER = os.getenv("SMTP_USER", "")
-# IMPORTANTE: Quitar espacios de contraseñas de Google App (vienen como 'xxxx xxxx xxxx xxxx')
-SMTP_PASSWORD = os.getenv("SMTP_PASSWORD", "").strip().replace(" ", "")
+RESEND_API_KEY = os.getenv("RESEND_API_KEY", "")
+FROM_EMAIL = os.getenv("FROM_EMAIL", "ArrasPro <onboarding@resend.dev>")
+
 
 def _obtener_app_base_url() -> str:
     """Obtiene la URL pública de la app con soporte para Railway."""
@@ -38,111 +32,89 @@ def _obtener_app_base_url() -> str:
 
 APP_BASE_URL = _obtener_app_base_url()
 
-def enviar_bienvenida(destinatario: str, nombre_usuario: str):
-    """
-    Envía un correo electrónico de bienvenida al usuario recién registrado.
-    """
-    if not SMTP_USER or not SMTP_PASSWORD:
-        print(f"⚠️  Configuración SMTP incompleta. Saltando el envío de correo a {destinatario}.")
-        return
+
+def _enviar(destinatario: str, asunto: str, html: str) -> bool:
+    """Envía un email via Resend API. Devuelve True si tuvo éxito."""
+    if not RESEND_API_KEY:
+        print(f"⚠️  RESEND_API_KEY no configurado. Saltando envío a {destinatario}.")
+        return False
 
     try:
-        # Crear el mensaje
-        msg = MIMEMultipart("alternative")
-        msg["Subject"] = "¡Bienvenido a ArrasPro! 🏠"
-        msg["From"] = f"ArrasPro <{SMTP_USER}>"
-        msg["To"] = destinatario
-
-        # Cuerpo del mensaje en HTML
-        html = f"""
-        <html>
-        <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
-            <div style="max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
-                <h1 style="color: #2563eb; text-align: center;">¡Hola, {nombre_usuario}! 👋</h1>
-                <p>Estamos encantados de tenerte en <strong>ArrasPro</strong>, la herramienta definitiva para gestionar tus contratos de arras de forma profesional.</p>
-                <div style="background-color: #f8fafc; padding: 15px; border-radius: 8px; margin: 20px 0;">
-                    <h2 style="font-size: 1.2rem; color: #1e293b;">¿Qué puedes hacer ahora?</h2>
-                    <ul style="padding-left: 20px;">
-                        <li>Generar contratos de arras con IA en segundos.</li>
-                        <li>Subir tu Nota Simple y DNI para autocompletar formularios.</li>
-                        <li>Gestionar y descargar tus documentos en PDF profesional.</li>
-                    </ul>
-                </div>
-                <p style="text-align: center; margin-top: 30px;">
-                    <a href="{APP_BASE_URL}" style="background-color: #2563eb; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold;">Ir a mi Dashboard</a>
-                </p>
-                <hr style="border: 0; border-top: 1px solid #eee; margin: 30px 0;">
-                <p style="font-size: 0.8rem; color: #64748b; text-align: center;">Este es un mensaje automático de ArrasPro. No respondas a este correo.</p>
-            </div>
-        </body>
-        </html>
-        """
-
-        # Adjuntar versión HTML
-        parte_html = MIMEText(html, "html")
-        msg.attach(parte_html)
-
-        # Conectar y enviar
-        with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
-            server.starttls() # Seguridad TLS
-            server.login(SMTP_USER, SMTP_PASSWORD)
-            server.sendmail(SMTP_USER, destinatario, msg.as_string())
-        
-        print(f"✅ Email de bienvenida enviado a: {destinatario}")
-
+        response = requests.post(
+            "https://api.resend.com/emails",
+            headers={
+                "Authorization": f"Bearer {RESEND_API_KEY}",
+                "Content-Type": "application/json",
+            },
+            json={
+                "from": FROM_EMAIL,
+                "to": [destinatario],
+                "subject": asunto,
+                "html": html,
+            },
+            timeout=10,
+        )
+        if response.status_code in (200, 201):
+            return True
+        print(f"❌ Resend API error ({response.status_code}): {response.text}")
+        return False
     except Exception as e:
         print(f"❌ Error enviando email a {destinatario}: {str(e)}")
+        return False
+
+
+def enviar_bienvenida(destinatario: str, nombre_usuario: str):
+    """Envía un correo electrónico de bienvenida al usuario recién registrado."""
+    html = f"""
+    <html>
+    <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+        <div style="max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
+            <h1 style="color: #2563eb; text-align: center;">¡Hola, {nombre_usuario}! 👋</h1>
+            <p>Estamos encantados de tenerte en <strong>ArrasPro</strong>, la herramienta definitiva para gestionar tus contratos de arras de forma profesional.</p>
+            <div style="background-color: #f8fafc; padding: 15px; border-radius: 8px; margin: 20px 0;">
+                <h2 style="font-size: 1.2rem; color: #1e293b;">¿Qué puedes hacer ahora?</h2>
+                <ul style="padding-left: 20px;">
+                    <li>Generar contratos de arras con IA en segundos.</li>
+                    <li>Subir tu Nota Simple y DNI para autocompletar formularios.</li>
+                    <li>Gestionar y descargar tus documentos en PDF profesional.</li>
+                </ul>
+            </div>
+            <p style="text-align: center; margin-top: 30px;">
+                <a href="{APP_BASE_URL}" style="background-color: #2563eb; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold;">Ir a mi Dashboard</a>
+            </p>
+            <hr style="border: 0; border-top: 1px solid #eee; margin: 30px 0;">
+            <p style="font-size: 0.8rem; color: #64748b; text-align: center;">Este es un mensaje automático de ArrasPro. No respondas a este correo.</p>
+        </div>
+    </body>
+    </html>
+    """
+    if _enviar(destinatario, "¡Bienvenido a ArrasPro! 🏠", html):
+        print(f"✅ Email de bienvenida enviado a: {destinatario}")
 
 
 def enviar_email_restablecimiento(destinatario: str, nombre_usuario: str, token: str):
-    """
-    Envía un correo electrónico con el enlace para restablecer la contraseña.
-    El enlace lleva al frontend con el token como parámetro en la URL.
-    """
-    if not SMTP_USER or not SMTP_PASSWORD:
-        print(f"⚠️  Configuración SMTP incompleta. Saltando el envío de correo a {destinatario}.")
-        print(f"🔑 Token de restablecimiento (debug): {token}")
-        return
+    """Envía un correo con el enlace para restablecer la contraseña."""
+    enlace = f"{APP_BASE_URL}/?reset_token={token}"
 
-    try:
-        msg = MIMEMultipart("alternative")
-        msg["Subject"] = "Restablecimiento de contraseña - ArrasPro 🔑"
-        msg["From"] = f"ArrasPro <{SMTP_USER}>"
-        msg["To"] = destinatario
-
-        # Enlace de restablecimiento (apunta al frontend con el token como parámetro)
-        enlace = f"{APP_BASE_URL}/?reset_token={token}"
-
-        html = f"""
-        <html>
-        <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
-            <div style="max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
-                <h1 style="color: #2563eb; text-align: center;">Restablecer contraseña 🔑</h1>
-                <p>Hola, <strong>{nombre_usuario}</strong>,</p>
-                <p>Hemos recibido una solicitud para restablecer la contraseña de tu cuenta en <strong>ArrasPro</strong>.</p>
-                <p>Haz clic en el siguiente botón para crear una nueva contraseña:</p>
-                <p style="text-align: center; margin: 30px 0;">
-                    <a href="{enlace}" style="background-color: #2563eb; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold;">Restablecer Contraseña</a>
-                </p>
-                <div style="background-color: #fef3c7; padding: 12px; border-radius: 8px; margin: 20px 0;">
-                    <p style="margin: 0; font-size: 0.9rem; color: #92400e;">⚠️ Este enlace expira en <strong>1 hora</strong>. Si no has solicitado este cambio, ignora este correo.</p>
-                </div>
-                <hr style="border: 0; border-top: 1px solid #eee; margin: 30px 0;">
-                <p style="font-size: 0.8rem; color: #64748b; text-align: center;">Este es un mensaje automático de ArrasPro. No respondas a este correo.</p>
+    html = f"""
+    <html>
+    <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+        <div style="max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
+            <h1 style="color: #2563eb; text-align: center;">Restablecer contraseña 🔑</h1>
+            <p>Hola, <strong>{nombre_usuario}</strong>,</p>
+            <p>Hemos recibido una solicitud para restablecer la contraseña de tu cuenta en <strong>ArrasPro</strong>.</p>
+            <p>Haz clic en el siguiente botón para crear una nueva contraseña:</p>
+            <p style="text-align: center; margin: 30px 0;">
+                <a href="{enlace}" style="background-color: #2563eb; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold;">Restablecer Contraseña</a>
+            </p>
+            <div style="background-color: #fef3c7; padding: 12px; border-radius: 8px; margin: 20px 0;">
+                <p style="margin: 0; font-size: 0.9rem; color: #92400e;">⚠️ Este enlace expira en <strong>1 hora</strong>. Si no has solicitado este cambio, ignora este correo.</p>
             </div>
-        </body>
-        </html>
-        """
-
-        parte_html = MIMEText(html, "html")
-        msg.attach(parte_html)
-
-        with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
-            server.starttls()
-            server.login(SMTP_USER, SMTP_PASSWORD)
-            server.sendmail(SMTP_USER, destinatario, msg.as_string())
-
+            <hr style="border: 0; border-top: 1px solid #eee; margin: 30px 0;">
+            <p style="font-size: 0.8rem; color: #64748b; text-align: center;">Este es un mensaje automático de ArrasPro. No respondas a este correo.</p>
+        </div>
+    </body>
+    </html>
+    """
+    if _enviar(destinatario, "Restablecimiento de contraseña - ArrasPro 🔑", html):
         print(f"✅ Email de restablecimiento enviado a: {destinatario}")
-
-    except Exception as e:
-        print(f"❌ Error enviando email de restablecimiento a {destinatario}: {str(e)}")

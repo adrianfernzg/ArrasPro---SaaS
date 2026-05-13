@@ -9,7 +9,7 @@ import uuid
 from datetime import datetime, timedelta
 from sqlalchemy.orm import Session
 from modelo.db.models import Usuario, PasswordResetToken
-from controlador.servicios.servicio_email import enviar_bienvenida, enviar_email_restablecimiento
+from controlador.servicios.servicio_email import enviar_email_restablecimiento
 from dotenv import load_dotenv
 
 # Cargar variables de entorno
@@ -188,10 +188,6 @@ def solicitar_restablecimiento(db: Session, email: str) -> bool:
     if not usuario:
         # Petición explícita del usuario: fallar si el correo no existe
         raise ValueError("No existe ninguna cuenta asociada a este correo electrónico.")
-
-    if not usuario.password_hash:
-        # Cuentas de Google no tienen contraseña que restablecer
-        raise ValueError("Esta cuenta está enlazada con Google. Inicia sesión usando el botón de Google.")
 
     # Generar token único
     token = str(uuid.uuid4())
