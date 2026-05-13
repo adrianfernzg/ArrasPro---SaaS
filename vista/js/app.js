@@ -36,6 +36,7 @@ function appState() {
             id: null
         },
         showAuthModal: false,
+        legalModal: null, // null | 'privacidad' | 'terminos' | 'contacto'
         authMode: 'login', // 'login' | 'signup' | 'forgot' | 'reset'
         authLoading: false,
         authError: '',
@@ -498,6 +499,14 @@ function appState() {
                 this.navigateTo('dashboard');
                 this.fetchUserContracts();
             }
+        },
+
+        openLegal(tipo) {
+            this.legalModal = tipo;
+        },
+
+        closeLegal() {
+            this.legalModal = null;
         },
 
         logout() {

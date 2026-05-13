@@ -52,6 +52,24 @@
     color: var(--primary);
 }
 
+.footer-legal-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    display: block;
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    margin-bottom: 0.6rem;
+    transition: color var(--transition-fast);
+    font-family: var(--font-family);
+    text-align: left;
+}
+
+.footer-legal-btn:hover {
+    color: var(--primary);
+}
+
 .footer-bottom {
     border-top: 1px solid var(--border-color);
     text-align: center;

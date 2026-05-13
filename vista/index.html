@@ -955,6 +955,133 @@
     </div>
 
     <!-- ============================================ -->
+    <!--               MODALES LEGALES               -->
+    <!-- ============================================ -->
+    <div class="modal-overlay legal-overlay" x-show="legalModal !== null" x-transition @click.self="closeLegal()">
+        <div class="legal-card modal-content" @click.stop>
+            <button type="button" class="close-modal" @click="closeLegal()">
+                <i data-lucide="x"></i>
+            </button>
+
+            <!-- ── POLÍTICA DE PRIVACIDAD ── -->
+            <div x-show="legalModal === 'privacidad'">
+                <h2 class="legal-title">Política de Privacidad</h2>
+                <p class="legal-updated">Última actualización: mayo de 2026</p>
+                <div class="legal-body">
+                    <h3>1. Responsable del tratamiento</h3>
+                    <p>ArrasPro es una plataforma desarrollada como Trabajo de Fin de Grado (TFG). Para cualquier cuestión relacionada con el tratamiento de sus datos puede contactar con nosotros en <strong>soporte@arraspro.es</strong>.</p>
+
+                    <h3>2. Datos personales que tratamos</h3>
+                    <p><strong>Datos de cuenta:</strong> nombre, dirección de email y contraseña cifrada mediante bcrypt.</p>
+                    <p><strong>Datos de contratos:</strong> información de vendedores y compradores (nombre completo, DNI/NIE/CIF, domicilio), datos del inmueble (dirección, referencia catastral, número de finca registral, precio) y datos de la operación (importe de arras, fecha de firma).</p>
+                    <p><strong>Documentos subidos:</strong> Notas Simples del Registro de la Propiedad e imágenes de documentos de identidad (DNI/NIE). Estos documentos se procesan exclusivamente para la extracción automática de datos y <strong>no se almacenan de forma permanente</strong> en nuestros servidores.</p>
+
+                    <h3>3. Finalidad y base jurídica</h3>
+                    <ul>
+                        <li><strong>Gestión de la cuenta de usuario:</strong> ejecución del contrato de servicio (art. 6.1.b RGPD).</li>
+                        <li><strong>Generación de contratos inmobiliarios:</strong> ejecución del contrato de servicio (art. 6.1.b RGPD).</li>
+                        <li><strong>Extracción de datos mediante IA:</strong> consentimiento explícito del usuario (art. 6.1.a RGPD).</li>
+                        <li><strong>Comunicaciones transaccionales</strong> (bienvenida, recuperación de contraseña): interés legítimo (art. 6.1.f RGPD).</li>
+                    </ul>
+
+                    <h3>4. Datos de categoría especial</h3>
+                    <p>Los documentos de identidad (DNI/NIE) son tratados conforme al art. 9 RGPD y el art. 9 de la LOPD-GDD. Su procesamiento se limita exclusivamente a la extracción de datos necesarios para la formalización del contrato, previa obtención de su consentimiento expreso.</p>
+
+                    <h3>5. Transferencias internacionales</h3>
+                    <p>Para la generación de documentos con inteligencia artificial utilizamos la API de Google Gemini (Google LLC), que actúa como encargado del tratamiento. Las transferencias internacionales quedan amparadas por el Acuerdo Marco de Privacidad de Datos UE-EE.UU. (Data Privacy Framework).</p>
+                    <p>Para el envío de correos electrónicos utilizamos Resend Inc., con infraestructura en la Unión Europea (Irlanda, eu-west-1).</p>
+
+                    <h3>6. Plazo de conservación</h3>
+                    <ul>
+                        <li><strong>Datos de cuenta:</strong> hasta la baja del servicio o 3 años de inactividad.</li>
+                        <li><strong>Contratos generados:</strong> hasta su eliminación manual por el usuario.</li>
+                        <li><strong>Tokens de recuperación de contraseña:</strong> 1 hora, eliminados automáticamente tras su uso o expiración.</li>
+                    </ul>
+
+                    <h3>7. Sus derechos</h3>
+                    <p>Puede ejercer en cualquier momento sus derechos de <strong>acceso, rectificación, supresión, oposición, portabilidad y limitación del tratamiento</strong> enviando un email a <strong>soporte@arraspro.es</strong> con el asunto "Ejercicio de derechos RGPD".</p>
+                    <p>Si considera que el tratamiento vulnera la normativa, tiene derecho a presentar una reclamación ante la <strong>Agencia Española de Protección de Datos</strong> (<a href="https://www.aepd.es" target="_blank" rel="noopener">www.aepd.es</a>).</p>
+                </div>
+            </div>
+
+            <!-- ── TÉRMINOS Y CONDICIONES ── -->
+            <div x-show="legalModal === 'terminos'">
+                <h2 class="legal-title">Términos y Condiciones</h2>
+                <p class="legal-updated">Última actualización: mayo de 2026</p>
+                <div class="legal-body">
+                    <h3>1. Objeto del servicio</h3>
+                    <p>ArrasPro es una plataforma de generación de documentos jurídicos inmobiliarios asistida por inteligencia artificial. Permite a sus usuarios crear contratos de arras y de arrendamiento de forma automatizada a partir de los datos introducidos y los documentos aportados.</p>
+
+                    <h3>2. Naturaleza del servicio — Aviso importante</h3>
+                    <p>⚠️ <strong>Los documentos generados por ArrasPro se elaboran mediante inteligencia artificial y tienen carácter meramente orientativo.</strong> ArrasPro <strong>no presta servicios de asesoría jurídica, legal ni notarial</strong>. Los contratos generados deben ser revisados por un abogado, notario u otro profesional del derecho antes de su firma y uso con efectos jurídicos.</p>
+                    <p>ArrasPro no se responsabiliza de las consecuencias derivadas del uso de documentos generados sin revisión profesional previa.</p>
+
+                    <h3>3. Registro y cuenta de usuario</h3>
+                    <p>Para acceder al servicio es necesario crear una cuenta con datos verídicos. El usuario es el único responsable de mantener la confidencialidad de sus credenciales y de toda la actividad realizada bajo su cuenta. Ante cualquier uso no autorizado, debe notificarlo inmediatamente a soporte@arraspro.es.</p>
+
+                    <h3>4. Uso aceptable</h3>
+                    <p>Queda expresamente prohibido usar ArrasPro para:</p>
+                    <ul>
+                        <li>Generar documentos con datos falsos o fraudulentos.</li>
+                        <li>Suplantar la identidad de terceras personas.</li>
+                        <li>Introducir datos personales de terceros sin su consentimiento.</li>
+                        <li>Cualquier actividad contraria a la legislación española o europea vigente.</li>
+                    </ul>
+
+                    <h3>5. Propiedad intelectual</h3>
+                    <p>La plataforma ArrasPro, incluyendo su código fuente, diseño, marca y textos, está protegida por la normativa de propiedad intelectual e industrial. El usuario conserva la titularidad de los datos que introduce y de los documentos que genera con sus propios datos.</p>
+
+                    <h3>6. Limitación de responsabilidad</h3>
+                    <p>El servicio se proporciona "tal cual" (<em>as is</em>) sin garantías de ningún tipo sobre la exactitud jurídica de los documentos generados. En ningún caso la responsabilidad total de ArrasPro frente al usuario excederá el importe efectivamente abonado por dicho usuario en los últimos 12 meses.</p>
+
+                    <h3>7. Modificación de los términos</h3>
+                    <p>ArrasPro se reserva el derecho a modificar estos términos. Los cambios sustanciales serán notificados por email con al menos 15 días de antelación. El uso continuado del servicio tras esa fecha implica la aceptación de los nuevos términos.</p>
+
+                    <h3>8. Legislación aplicable y jurisdicción</h3>
+                    <p>Estos términos se rigen por la legislación española. Para cualquier controversia derivada de su interpretación o cumplimiento, las partes se someten a los juzgados y tribunales del domicilio del usuario, salvo que la normativa aplicable establezca otro fuero imperativo.</p>
+                </div>
+            </div>
+
+            <!-- ── CONTACTO ── -->
+            <div x-show="legalModal === 'contacto'">
+                <h2 class="legal-title">Contacto</h2>
+                <p class="legal-updated">Estamos aquí para ayudarte</p>
+                <div class="legal-body legal-contacto">
+                    <div class="contacto-item">
+                        <div class="contacto-icon"><i data-lucide="mail"></i></div>
+                        <div>
+                            <p class="contacto-label">Email de soporte</p>
+                            <a href="mailto:soporte@arraspro.es" class="contacto-value">soporte@arraspro.es</a>
+                        </div>
+                    </div>
+                    <div class="contacto-item">
+                        <div class="contacto-icon"><i data-lucide="globe"></i></div>
+                        <div>
+                            <p class="contacto-label">Web</p>
+                            <a href="https://www.arraspro.es" target="_blank" rel="noopener" class="contacto-value">www.arraspro.es</a>
+                        </div>
+                    </div>
+                    <div class="contacto-item">
+                        <div class="contacto-icon"><i data-lucide="shield"></i></div>
+                        <div>
+                            <p class="contacto-label">Protección de datos (RGPD)</p>
+                            <a href="mailto:soporte@arraspro.es?subject=Ejercicio%20de%20derechos%20RGPD" class="contacto-value">soporte@arraspro.es</a>
+                            <p class="contacto-hint">Asunto: "Ejercicio de derechos RGPD"</p>
+                        </div>
+                    </div>
+                    <div class="contacto-item">
+                        <div class="contacto-icon"><i data-lucide="clock"></i></div>
+                        <div>
+                            <p class="contacto-label">Tiempo de respuesta</p>
+                            <p class="contacto-value">En un plazo máximo de 72 horas</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
     <!--                    FOOTER                    -->
     <!-- ============================================ -->
     <footer class="main-footer" x-show="currentView === 'landing'">
@@ -975,9 +1102,9 @@
             </div>
             <div class="footer-right-col">
                 <h4>Legal</h4>
-                <a href="#">Privacidad</a>
-                <a href="#">Términos</a>
-                <a href="#">Contacto</a>
+                <button type="button" class="footer-legal-btn" @click="openLegal('privacidad')">Política de Privacidad</button>
+                <button type="button" class="footer-legal-btn" @click="openLegal('terminos')">Términos y Condiciones</button>
+                <button type="button" class="footer-legal-btn" @click="openLegal('contacto')">Contacto</button>
             </div>
         </div>
         <div class="footer-bottom">
